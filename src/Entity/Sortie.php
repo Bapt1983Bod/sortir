@@ -34,12 +34,9 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
-    private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'orgas')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $organisateur = null;
+
+
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -52,6 +49,13 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
+    private Collection $participants;
+
+    #[ORM\ManyToOne(inversedBy: 'orgas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $organisateur = null;
 
     public function __construct()
     {
@@ -135,6 +139,44 @@ class Sortie
         return $this;
     }
 
+
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getEtat(): ?Etat
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?Etat $etat): static
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Participant>
      */
@@ -170,42 +212,6 @@ class Sortie
     public function setOrganisateur(?Participant $organisateur): static
     {
         $this->organisateur = $organisateur;
-
-        return $this;
-    }
-
-    public function getSite(): ?Site
-    {
-        return $this->site;
-    }
-
-    public function setSite(?Site $site): static
-    {
-        $this->site = $site;
-
-        return $this;
-    }
-
-    public function getLieu(): ?Lieu
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(?Lieu $lieu): static
-    {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
-    public function getEtat(): ?Etat
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(?Etat $etat): static
-    {
-        $this->etat = $etat;
 
         return $this;
     }
