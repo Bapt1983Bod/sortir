@@ -3,18 +3,42 @@
 {% block title %}Hello MainController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="example-wrapper">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Baptiste/PhpstormProjects/sortir.com/src/Controller/MainController.php</code></li>
-        <li>Your template at <code>C:/Users/Baptiste/PhpstormProjects/sortir.com/templates/main/index.html.twig</code></li>
-    </ul>
-</div>
+
+
+
+        <table>
+            <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Cloture</th>
+                <th>Inscrits/Places</th>
+                <th>État</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('Y-m-d') }}</td>
+                    <td>{{ sortie.nbInscriptionsmax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+                    <td><a href="#" class="btn btn-primary">Modifier</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
 {% endblock %}
