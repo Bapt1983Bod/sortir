@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -30,6 +32,22 @@ class Participant
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+    private Collection $sorties;
+
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Site $site = null;
+
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
+    private Collection $orgas;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+        $this->orgas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +122,72 @@ class Participant
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): static
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): static
+    {
+        $this->sorties->removeElement($sorty);
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getOrgas(): Collection
+    {
+        return $this->orgas;
+    }
+
+    public function addOrga(Sortie $orga): static
+    {
+        if (!$this->orgas->contains($orga)) {
+            $this->orgas->add($orga);
+            $orga->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrga(Sortie $orga): static
+    {
+        if ($this->orgas->removeElement($orga)) {
+            // set the owning side to null (unless already changed)
+            if ($orga->getOrganisateur() === $this) {
+                $orga->setOrganisateur(null);
+            }
+        }
 
         return $this;
     }
