@@ -9,6 +9,7 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,22 +28,19 @@ class CreationSortieType extends AbstractType
             ])
             ->add('nbInscriptionsmax')
             ->add('infosSortie')
-            ->add('organisateur', EntityType::class, [
-                'class' => Participant::class,
-                'choice_label' => 'id',
-            ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('etat', EntityType::class, [
                 'class' => Etat::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelle',
             ])
+            ->add('submit', SubmitType::class)
         ;
     }
 
