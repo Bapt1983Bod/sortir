@@ -27,11 +27,6 @@ class CreationSortieType extends AbstractType
             ])
             ->add('nbInscriptionsmax')
             ->add('infosSortie')
-            ->add('participants', EntityType::class, [
-                'class' => Participant::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
             ->add('organisateur', EntityType::class, [
                 'class' => Participant::class,
                 'choice_label' => 'id',
