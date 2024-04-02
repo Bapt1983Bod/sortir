@@ -1,3 +1,7 @@
 body {
     background-color: skyblue;
 }
+
+#logo {
+    width: 2em;
+}
