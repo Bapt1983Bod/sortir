@@ -27,6 +27,7 @@ class SortieController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('app_main');
         }
+
         return $this->render('sortie/index.html.twig', [
             'form' => $form
         ]);
@@ -46,6 +47,7 @@ class SortieController extends AbstractController
             $this->addFlash('info', 'Inscription effectuée');
             return $this->redirectToRoute('app_main');
         }
+
         $this->addFlash('info', 'Inscription impossible - temps dépassé');
         return $this->redirectToRoute('app_main');
     }

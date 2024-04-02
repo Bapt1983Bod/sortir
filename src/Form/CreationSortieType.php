@@ -40,7 +40,9 @@ class CreationSortieType extends AbstractType
                 'class' => Etat::class,
                 'choice_label' => 'libelle',
             ])
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => 'submit',
+            ])
         ;
     }
 
