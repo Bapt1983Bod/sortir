@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\CreationSortieType;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +32,40 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortieInscription/{id}', name: 'app_sortie_inscription')]
+    public function sorties(Sortie $sortie): Response
+    {
+        if ($sortie->getDateLimiteInscription() > new \DateTime('now')
+            && $sortie->getNbInscriptionsmax() > $sortie->getParticipants()->count()
+            && $sortie->getOrganisateur() !== $this->getUser()
+            && !$sortie->getParticipants()->contains($this->getUser())
+            && $sortie->getEtat()->getLibelle() === 'Ouverte')
+        {
+            $participant = $this->getUser();
+            $sortie->addParticipant($participant);
+            $this->addFlash('info', 'Inscription effectuée');
+            return $this->redirectToRoute('app_main');
+        }
+        $this->addFlash('info', 'Inscription impossible - temps dépassé');
+        return $this->redirectToRoute('app_main');
+    }
+
+    #[Route('/sortieAnnulation/{id}', name: 'app_sortie_annulation')]
+    public function annulation(Sortie $sortie): Response
+    {
+        $participant = $this->getUser();
+        $sortie->removeParticipant($participant);
+        $this->addFlash('info', 'Inscription annulée');
+        return $this->redirectToRoute('app_main');
+    }
+
+    #[Route('/sortie/{id}', name: 'app_sortie')]
+    public function sortie(Sortie $sortie): Response
+    {
+        return $this->render('sortie/sortie.html.twig', [
+            'sortie' => $sortie
+        ]);
+    }
 
 
 }
