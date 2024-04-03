@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -74,4 +75,57 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByOrganisateur(Participant $organisateur): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.organisateur = :organisateur')
+            ->setParameter('organisateur', $organisateur)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByParticipant(Participant $participant): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.participants', 'ps')
+            ->where('ps = :participant')
+            ->setParameter('participant', $participant)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findNotRegisteredByParticipant(Participant $participant): array
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        return $qb->where(
+            $qb->expr()->notIn(
+                's.id',
+                $this->createQueryBuilder('s2')
+                    ->select('s2.id')
+                    ->innerJoin('s2.participants', 'p')
+                    ->andWhere('p = :participant')
+                    ->getDQL()
+            )
+        )
+            ->setParameter('participant', $participant)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+    public function findRegisteredAndNotRegisteredByParticipant(Participant $participant): array
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        return $qb->leftJoin('s.participants', 'p')
+            ->andWhere('p = :participant OR p IS NULL')
+            ->setParameter('participant', $participant)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 }

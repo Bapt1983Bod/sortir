@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Site;
 use App\Repository\SortieRepository;
 use DateTime;
@@ -15,34 +16,55 @@ use Doctrine\ORM\EntityManagerInterface;
 class MainController extends AbstractController
 {
 
+
     #[Route('/main', name: 'app_main')]
     public function index(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
     {
+        // Récupérer les paramètres de la requête
         $siteId = $request->query->get('site');
         $keyword = $request->query->get('keyword');
-        $startDate = $request->query->get('start_date'); // Récupérer la date de début depuis la requête
-        $endDate = $request->query->get('end_date'); // Récupérer la date de fin depuis la requête
-        $user = $this->getUser();
+        $startDate = $request->query->get('start_date');
+        $endDate = $request->query->get('end_date');
+        $organisateur = $request->query->get('organisateur');
+        $participantRegistered = $request->query->get('participant_registered');
+        $participantNotRegistered = $request->query->get('participant_not_registered');
+        $participant = $this->getUser();
+        $sortiePassee = $request->query->get('sortie_passee');
 
+        // Commencer avec toutes les sorties
+        $sorties = $sortieRepository->findAll();
+
+        // Appliquer les filtres un par un
         if ($siteId) {
             $sorties = $sortieRepository->findBySite($siteId);
-        } else {
-            $sorties = $sortieRepository->findAll(); // Récupérer toutes les sorties si aucun site sélectionné
         }
 
-        // Appliquer la recherche par mot-clé si un mot-clé est saisi
+        if ($sortiePassee) {
+            $etatPassee = $entityManager->getRepository(Etat::class)->find(5); // ID de l'état "Passée"
+            $sorties = $sortieRepository->findBy(['etat' => $etatPassee]);
+        }
+
         if ($keyword) {
             $sorties = $sortieRepository->findByKeyword($keyword);
         }
 
-        // Appliquer le filtre de date si les deux dates sont fournies
         if ($startDate && $endDate) {
-            // Convertir les chaînes de date en objets DateTime
             $startDateTime = new DateTime($startDate);
             $endDateTime = new DateTime($endDate);
-
-            // Récupérer les sorties entre les deux dates
             $sorties = $sortieRepository->findByDateRange($startDateTime, $endDateTime);
+        }
+
+        if ($organisateur) {
+            $sorties = $sortieRepository->findByOrganisateur($this->getUser());
+        }
+
+        // Filtrer les sorties selon les cas cochés
+        if ($participantRegistered && $participantNotRegistered) {
+            $sorties = $sortieRepository->findRegisteredAndNotRegisteredByParticipant($participant);
+        } elseif ($participantRegistered) {
+            $sorties = $sortieRepository->findByParticipant($participant);
+        } elseif ($participantNotRegistered) {
+            $sorties = $sortieRepository->findNotRegisteredByParticipant($participant);
         }
 
         // Récupérer la liste des sites depuis la base de données
@@ -51,8 +73,9 @@ class MainController extends AbstractController
         // Passer les sorties filtrées et la liste des sites à la vue
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,
-            'sites' => $sites, // Passer la liste des sites à la vue
-            'user' => $user
+            'sites' => $sites,
+            'user' => $participant
         ]);
     }
+
 }
