@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sortie;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,32 @@ class SortieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findBySite(int $siteId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.site = :siteId')
+            ->setParameter('siteId', $siteId)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByKeyword(string $keyword): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.site', 'site')
+            ->where('s.nom LIKE :keyword')
+            ->orWhere('site.nom LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByDateRange(DateTime $startDate, DateTime $endDate): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.site', 'site')
+            ->where('s.dateHeureDebut BETWEEN :start_date AND :end_date')
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->getQuery()
+            ->getResult();
+    }
 }

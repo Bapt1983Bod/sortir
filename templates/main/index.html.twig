@@ -1,24 +1,43 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello MainController!{% endblock %}
 
 {% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
+    <div class="container">
+        <h1>Liste des sorties</h1>
 
-    <div class="example-wrapper">
+        <form action="{{ path('app_main') }}" method="GET" class="filter-form">
+            <div class="form-group">
+                <label for="site">Filtrer par site :</label>
+                <select name="site" id="site" class="form-control">
+                    <option value="">Tous les sites</option>
+                    {% for site in sites %}
+                        <option value="{{ site.id }}">{{ site.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="keyword">Rechercher :</label>
+                <input type="text" name="keyword" id="keyword" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="start_date">Date de début :</label>
+                <input type="date" name="start_date" id="start_date" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="end_date">Date de fin :</label>
+                <input type="date" name="end_date" id="end_date" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </form>
 
-
-
-
-        <table>
+        <table class="table">
             <thead>
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Cloture</th>
+                <th>Clôture</th>
                 <th>Inscrits/Places</th>
                 <th>État</th>
                 <th>Organisateur</th>
@@ -29,19 +48,22 @@
             {% for sortie in sorties %}
                 <tr>
                     <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut|date('Y-m-d H:i:s') }}</td>
-                    <td>{{ sortie.dateHeureDebut|date('Y-m-d') }}</td>
-                    <td>{{ sortie.nbInscriptionsmax }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('d-m-Y H:i:s') }}</td>
+                    <td>{{ sortie.dateHeureDebut|date('d-m-Y') }}</td>
+                    <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsmax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+
                     {% if(app.user) %}
-                    <td><a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a></td>
-                    <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
+                        {% if(not sortie.participants.contains(user)) %}
+                            <td><a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a></td>
+                        {% else %}
+                            <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-
     </div>
 {% endblock %}
