@@ -50,7 +50,6 @@ class SortieController extends AbstractController
             $em->persist($participant);
             $em->flush();
             $this->addFlash('info', 'Inscription effectuée');
-            dd($sortie);
             return $this->redirectToRoute('app_main');
         }
 
