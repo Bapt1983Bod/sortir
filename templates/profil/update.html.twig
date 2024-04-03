@@ -19,7 +19,7 @@
         {{ form_row(form.email) }}
         {{ form_row(form.plainPassword, {label: 'Password'}) }}
         {{ form_row( form.site ) }}
-{#        TODO ajouter photo profil si présente sinon afficher image par défaut#}
+
             {% if app.user.photo %}
                 <img src="{{ asset('images/profil/'~ app.user.photo) }}" alt="Photo de profil">
             {% else %}

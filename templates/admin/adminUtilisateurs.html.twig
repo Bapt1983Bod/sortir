@@ -1,0 +1,51 @@
+{% extends 'admin/index.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block div %}
+
+    <h2>Gestion des utilisateurs</h2>
+
+
+    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateurs/update',{'id':0}) }}">Ajouter un utilisateur</a></button>
+    <br><br>
+
+    <table class="table table-dark">
+        <thead>
+        <tr>
+            <th scope="col">Nom Prénom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Admin</th>
+            <th scope="col">Actif</th>
+            <th scope="col">Actions</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.nom }} {{ user.prenom }} </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.administrateur }}</td>
+            <td>{{ user.actif }}</td>
+
+            <td>
+                {% if user.administrateur == 1 %}
+                    <button class="btn btn-warning"><a href="">Passer User</a></button>
+                {% else %}
+                    <button class="btn btn-success"><a href="">Passer Admin</a></button>
+                {% endif %}
+                {% if user.actif == 1 %}
+                    <button class="btn btn-warning"><a href="">Passer Inactif</a></button>
+                {% else %}
+                    <button class="btn btn-success"><a href="">Passer Actif</a></button>
+                {% endif %}
+                    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateurs/update',{'id' : user.id }) }}">Modifier</a></button>
+                    <button class="btn btn-danger"><a href="{{ path('app_admin_utilisateurs/delete',{'id' : user.id }) }}">Supprimer</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
