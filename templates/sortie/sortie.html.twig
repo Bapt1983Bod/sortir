@@ -28,7 +28,7 @@
         <td>{{ sortie.lieu.nom }}</td>
         <td>{{ sortie.etat.libelle }}</td>
         <td>{% for participant in sortie.participants  %}
-        {{ participant.nom  }}<br>
+        <a href="{{ path('app_participant_show', {'id': participant.id}) }}"></a>{{ participant.nom  }}<br>
     {% endfor %}</td>
     </tr>
     </tbody>
