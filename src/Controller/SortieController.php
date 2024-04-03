@@ -34,14 +34,20 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortieInscription/{id}', name: 'app_sortie_inscription')]
-    public function sorties(Sortie $sortie): Response
+    public function sorties(Sortie $sortie, EntityManagerInterface $em): Response
     {
         if ($sortie->getDateLimiteInscription() > new \DateTime('now')
             && $sortie->getNbInscriptionsmax() > $sortie->getParticipants()->count()
             && !$sortie->getParticipants()->contains($this->getUser()))
         {
+
             $participant = $this->getUser();
-            $sortie->addParticipant($participant);
+            $sortie->getParticipants()->add($participant);
+            $em->persist($sortie);
+            $em->flush();
+            $participant->getSorties()-> add($sortie);
+            $em->persist($participant);
+            $em->flush();
             $this->addFlash('info', 'Inscription effectuée');
             return $this->redirectToRoute('app_main');
         }
@@ -51,10 +57,15 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortieAnnulation/{id}', name: 'app_sortie_annulation')]
-    public function annulation(Sortie $sortie): Response
+    public function annulation(Sortie $sortie, EntityManagerInterface $em): Response
     {
         $participant = $this->getUser();
-        $sortie->removeParticipant($participant);
+        $sortie->getParticipants()->removeElement($participant);
+        $em->persist($sortie);
+        $em->flush();
+        $participant->getSorties()->removeElement($sortie);
+        $em->persist($participant);
+        $em->flush();
         $this->addFlash('info', 'Inscription annulée');
         return $this->redirectToRoute('app_main');
     }
