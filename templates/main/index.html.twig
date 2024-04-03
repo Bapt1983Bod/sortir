@@ -34,7 +34,10 @@
                     <td>{{ sortie.nbInscriptionsmax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
-                    <td><a href="#" class="btn btn-primary">Modifier</a></td>
+                    {% if(app.user) %}
+                    <td><a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a></td>
+                    <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

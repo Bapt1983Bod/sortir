@@ -38,9 +38,7 @@ class SortieController extends AbstractController
     {
         if ($sortie->getDateLimiteInscription() > new \DateTime('now')
             && $sortie->getNbInscriptionsmax() > $sortie->getParticipants()->count()
-            && $sortie->getOrganisateur() !== $this->getUser()
-            && !$sortie->getParticipants()->contains($this->getUser())
-            && $sortie->getEtat()->getLibelle() === 'Ouverte')
+            && !$sortie->getParticipants()->contains($this->getUser()))
         {
             $participant = $this->getUser();
             $sortie->addParticipant($participant);
@@ -48,7 +46,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        $this->addFlash('info', 'Inscription impossible - temps dépassé');
+        $this->addFlash('info', 'Inscription impossible - un problème est survenu');
         return $this->redirectToRoute('app_main');
     }
 
