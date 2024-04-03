@@ -1,0 +1,31 @@
+{% extends 'admin/index.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block div %}
+
+    <h1>Gestion des sites</h1>
+
+    <table class="table table-dark">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Ville</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+        <tr>
+            <th scope="row">{{ site.id }}</th>
+            <td>{{ site.nom }}</td>
+            <td>
+                    <button class="btn btn-danger"><a href="{{ path('app_admin_site_delete',{'id' : site.id }) }}">Supprimer</a></button>
+                    <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : site.id }) }}">Modifier</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

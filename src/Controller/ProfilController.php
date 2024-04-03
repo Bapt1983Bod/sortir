@@ -7,9 +7,11 @@ use App\Form\ProfileType;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfilController extends AbstractController
 {
@@ -20,7 +22,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/profil/update', name: 'app_profil_update')]
-    public function update(EntityManagerInterface $em, Request $request): Response
+    public function update(EntityManagerInterface $em, Request $request, SluggerInterface $slugger): Response
     {
         // Récupération de l'utilisateur connecté
         $user=$this->getUser();
@@ -29,7 +31,26 @@ class ProfilController extends AbstractController
         $form = $this ->createForm(ProfileType::class,$user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()){
+        // Vérification si formulaire soumis et valide
+        if ($form->isSubmitted() and $form->isValid()){
+
+            // Vérif si présence d'une photo de profil
+            if ($form->get('image_file')->getData() instanceof UploadedFile){
+                // suppression de la photo déjà présente
+                if($user->getPhoto() && file_exists('images/profil/'.$user->getPhoto())){
+                    unlink('images/profil/'.$user->getPhoto());
+                }
+
+                // On récupère l'objet
+                $photo = $form->get('image_file')->getData();
+                // standardisation du nom du fichier
+                $fileName = $slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$photo->guessExtension();
+                // renommage et transfert du fichier dans le dossier
+                $photo->move('images/profil',$fileName);
+
+                $user->setPhoto($fileName);
+            }
+
             $em->persist($user);
             $em->flush();
 

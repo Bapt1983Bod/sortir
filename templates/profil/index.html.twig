@@ -11,6 +11,8 @@
 <div class="example-wrapper">
     <h1>Hello {{ app.user.prenom }} ! ✅</h1>
 
+    <img src="{{ asset('images/profil/'~ app.user.photo ) }}" alt="Photo de profil">
+
     <ul>
         <li>Prenom : {{ app.user.prenom }}</li>
         <li>Nom : {{ app.user.nom }}</li>

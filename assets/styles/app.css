@@ -5,3 +5,8 @@ body {
 #logo {
     width: 2em;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+}

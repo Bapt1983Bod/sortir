@@ -18,7 +18,14 @@
         {{ form_row( form.telephone) }}
         {{ form_row(form.email) }}
         {{ form_row(form.plainPassword, {label: 'Password'}) }}
-        {{ form_row( form.site) }}
+        {{ form_row( form.site ) }}
+{#        TODO ajouter photo profil si présente sinon afficher image par défaut#}
+            {% if app.user.photo %}
+                <img src="{{ asset('images/profil/'~ app.user.photo) }}" alt="Photo de profil">
+            {% else %}
+                <img src="{{ asset('images/profil/defaultProfil.png') }}" alt="Photo de profil">
+            {% endif %}
+        {{ form_row( form.image_file) }}
 
         <button type="submit" class="btn btn-danger">Modifier</button>
     {{ form_end(form) }}
