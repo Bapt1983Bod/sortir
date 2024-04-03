@@ -13,11 +13,14 @@
                         Accueil
                     </a>
                 </li>
+                {% if is_granted('IS_AUTHENTICATED') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_profil') }}">
                         Mon Profil
                     </a>
                 </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_main') }}">
                         Villes
@@ -28,6 +31,7 @@
                         Sites
                     </a>
                 </li>
+                {% endif %}
 
                 {% if is_granted('IS_AUTHENTICATED') %}
                     <li class="nav-item">
