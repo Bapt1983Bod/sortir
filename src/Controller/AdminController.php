@@ -96,7 +96,6 @@ class AdminController extends AbstractController
         $formUser->handleRequest($request);
 
         if ($formUser->isSubmitted() and $formUser->isValid()){
-            dd($formUser);
             $em->persist($participant);
             $em->flush();
 
