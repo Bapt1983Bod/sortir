@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -22,6 +23,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email()]
     private ?string $email = null;
 
     /**
@@ -37,12 +39,15 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank()]
     private ?string $telephone = null;
 
     #[ORM\Column]
@@ -58,6 +63,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $orgas;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[Assert\NotBlank()]
     private ?Site $site = null;
 
     #[ORM\Column(length: 255, nullable: true)]

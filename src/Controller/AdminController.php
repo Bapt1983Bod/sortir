@@ -96,6 +96,17 @@ class AdminController extends AbstractController
         $formUser->handleRequest($request);
 
         if ($formUser->isSubmitted() and $formUser->isValid()){
+
+            // Récupération la valeur directe du champ plainPassword du formulaire
+            $plainPassword = $formUser->get('plainPassword')->getData();
+
+            // Vérifie si un nouveau mot de passe a été fourni
+            if ($plainPassword) {
+                // Hasher le mot de passe
+                $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+                $participant->setPassword($hashedPassword);
+            }
+
             $em->persist($participant);
             $em->flush();
 
