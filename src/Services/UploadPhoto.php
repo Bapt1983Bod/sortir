@@ -5,16 +5,10 @@ namespace App\Services;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class UploadPhoto
+class uploadPhoto
 {
 
-
-    public function __construct(SluggerInterface $slugger)
-    {
-        $this->slugger = $slugger;
-    }
-
-    public function uploadPhoto($file, $user)
+    public function uploadPhoto($file, $user, SluggerInterface $slugger)
     {
         // Vérif si présence d'une photo de profil
         if ($file instanceof UploadedFile){
@@ -24,7 +18,7 @@ class UploadPhoto
             }
 
             // standardisation du nom du fichier
-            $fileName = $this->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$file->guessExtension();
+            $fileName = $slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$file->guessExtension();
             // renommage et transfert du fichier dans le dossier
             $file->move('images/profil',$fileName);
 

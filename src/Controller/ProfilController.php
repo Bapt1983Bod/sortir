@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Participant;
 use App\Form\ProfileType;
-use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
+use App\Services\UploadPhoto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,17 +22,9 @@ class ProfilController extends AbstractController
         return $this->render('profil/monProfil.html.twig');
     }
 
-    #[Route('/profil/{id}', name: 'app_profil_show')]
-    public function showprofil($id, ParticipantRepository $participantRepository): Response
-    {
-        $participant = $participantRepository->find($id);
 
-        return $this->render('profil/profilParticipant.html.twig', [
-            "participant"=>$participant
-        ]);
-    }
 
-    #[Route('/profil/update', name: 'app_profil_update')]
+    #[Route('/profil/update', name: 'app_updateprofil')]
     public function update(EntityManagerInterface $em, Request $request, SluggerInterface $slugger): Response
     {
         // Récupération de l'utilisateur connecté
@@ -47,24 +37,26 @@ class ProfilController extends AbstractController
         // Vérification si formulaire soumis et valide
         if ($form->isSubmitted() and $form->isValid()){
 
-            // Vérif si présence d'une photo de profil
-            if ($form->get('image_file')->getData() instanceof UploadedFile){
-                // suppression de la photo déjà présente
-                if($user->getPhoto() && file_exists('images/profil/'.$user->getPhoto())){
-                    unlink('images/profil/'.$user->getPhoto());
-                }
+            // On récupère l'objet
+            $photo = $form->get('image_file')->getData();
 
-                // On récupère l'objet
-                $photo = $form->get('image_file')->getData();
-                // standardisation du nom du fichier
-                $fileName = $slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$photo->guessExtension();
-                // renommage et transfert du fichier dans le dossier
-                $photo->move('images/profil',$fileName);
+//            // Vérif si présence d'une photo de profil
+//            if ($form->get('image_file')->getData() instanceof UploadedFile){
+//                // suppression de la photo déjà présente
+//                if($user->getPhoto() && file_exists('images/profil/'.$user->getPhoto())){
+//                    unlink('images/profil/'.$user->getPhoto());
+//                }
+//
+//
+//                // standardisation du nom du fichier
+//                $fileName = $slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$photo->guessExtension();
+//                // renommage et transfert du fichier dans le dossier
+//                $photo->move('images/profil',$fileName);
+//
+//                $user->setPhoto($fileName);
+//            }
 
-                $user->setPhoto($fileName);
-            }
-
-
+            //$uploadPhoto->uploadPhoto($photo,$user);
 
             $em->persist($user);
             $em->flush();
@@ -80,5 +72,15 @@ class ProfilController extends AbstractController
 
 
 
+    }
+
+    #[Route('/profil/{id}', name: 'app_profil_show')]
+    public function showprofil($id, ParticipantRepository $participantRepository): Response
+    {
+        $participant = $participantRepository->find($id);
+
+        return $this->render('profil/profilParticipant.html.twig', [
+            "participant"=>$participant
+        ]);
     }
 }
