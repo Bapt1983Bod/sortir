@@ -25,7 +25,7 @@ class ProfilController extends AbstractController
 
 
     #[Route('/profil/update', name: 'app_updateprofil')]
-    public function update(EntityManagerInterface $em, Request $request, SluggerInterface $slugger): Response
+    public function update(EntityManagerInterface $em, Request $request, SluggerInterface $slugger, uploadPhoto $uploadPhoto): Response
     {
         // Récupération de l'utilisateur connecté
         $user=$this->getUser();
@@ -56,7 +56,7 @@ class ProfilController extends AbstractController
 //                $user->setPhoto($fileName);
 //            }
 
-            //$uploadPhoto->uploadPhoto($photo,$user);
+            $uploadPhoto->uploadPhoto($photo,$user);
 
             $em->persist($user);
             $em->flush();

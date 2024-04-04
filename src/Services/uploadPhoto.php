@@ -9,6 +9,8 @@ class uploadPhoto
 {
 
 
+    private SluggerInterface $slugger;
+
     public function __construct(SluggerInterface $slugger)
     {
         $this->slugger = $slugger;
@@ -24,7 +26,7 @@ class uploadPhoto
             }
 
             // standardisation du nom du fichier
-            $fileName = $this->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$file->guessExtension();
+            $fileName = $this->slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$file->guessExtension();
             // renommage et transfert du fichier dans le dossier
             $file->move('images/profil',$fileName);
 
