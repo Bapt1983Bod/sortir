@@ -13,12 +13,13 @@
                         Accueil
                     </a>
                 </li>
+                {% if is_granted('IS_AUTHENTICATED') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_creation') }}">
                         Ajouter Une Sortie
                     </a>
                 </li>
-                {% if is_granted('IS_AUTHENTICATED') %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_profil') }}">
                         Mon Profil
