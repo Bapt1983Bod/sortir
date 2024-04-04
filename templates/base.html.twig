@@ -14,6 +14,7 @@
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <script src="{{ asset('js/addForm.js')}}"></script>
         {% endblock %}
     </head>
     <body class="d-flex flex-column">

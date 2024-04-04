@@ -45,4 +45,13 @@ class SiteRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByKeyword(string $keyword) : array
+    {
+        return $this->createQueryBuilder('site')
+            ->where('site.nom LIKE :keyword')
+            ->setParameter('keyword','%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }

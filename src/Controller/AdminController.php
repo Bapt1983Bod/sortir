@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Entity\Site;
+use App\Entity\Ville;
 use App\Form\ProfileType;
 use App\Form\SiteType;
+use App\Form\VilleType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use App\Repository\VilleRepository;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,16 +24,24 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
+
+// ADMINISTRATION DES SITES
     #[Route('/site', name: '_site')]
-    public function adminSites (SiteRepository $siteRepository): Response
+    public function adminSites (SiteRepository $siteRepository, Request $request): Response
     {
-        $sites = $siteRepository->findAll();
+
+        if ($request->query->get('keyword')){
+            $sites = $siteRepository ->findByKeyword($request->query->get('keyword'));
+        } else {
+            $sites = $siteRepository->findAll();
+        }
 
         return $this->render('admin/adminSites.html.twig', [
             'sites' => $sites,
         ]);
     }
 
+    // Suppression d'un site
     #[Route('/site/delete/{id}', name: '_site_delete')]
     public function deleteSite(Site $site, EntityManagerInterface $em) : Response
     {
@@ -42,6 +53,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin_site');
     }
 
+    // màj du site
     #[Route('/site/update/{id}', name: '_site_update')]
     public function updateSite(?Site $site, EntityManagerInterface $em, Request $request) : Response
     {
@@ -62,10 +74,12 @@ class AdminController extends AbstractController
         }
 
         return $this->render('admin/adminSitesUpdate.html.twig',[
-            'formSite'=>$formSite
+            'formSite'=>$formSite->createView()
         ]);
     }
 
+
+// ADMINISTRATION DES UTILISATEURS
     #[Route('/utilisateurs', name: '_utilisateurs')]
     public function adminUtilisateurs (ParticipantRepository $participantRepository) : Response
     {
@@ -76,6 +90,7 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Suppression d'un utilisateur
     #[Route('/utilisateurs/delete/{id}', name: '_utilisateurs/delete')]
     public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em, PhotoUploader $photoUploader) : Response
     {
@@ -90,6 +105,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin_utilisateurs');
     }
 
+    // màj des données utilisateurs
     #[Route('/utilisateurs/update/{id}', name: '_utilisateurs/update')]
     public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword) : Response
     {
@@ -124,11 +140,12 @@ class AdminController extends AbstractController
         }
 
         return $this->render('admin/adminUtilisateursUpdate.html.twig', [
-            'form'=>$formUser,
+            'form'=>$formUser->createView(),
             'user'=>$participant
         ]);
     }
 
+    // Modification du role de l'utilisateur
     #[Route('/utilisateurs/setRole/{id}',name: "_utilisateurs/setRole")]
     public function setRole(Participant $participant, EntityManagerInterface $em) : Response
     {
@@ -148,7 +165,8 @@ class AdminController extends AbstractController
         return $this->redirectToRoute("app_admin_utilisateurs");
     }
 
-    #[Route('/utilisteurs/actif/{id}', name: '_utilisteurs/actif')]
+    // Modification du statut utilisateur (Actif/Inactif)
+    #[Route('/utilisateurs/actif/{id}', name: '_utilisteurs/actif')]
     public function setActif(Participant $participant, EntityManagerInterface $em): Response
     {
         if($participant->isActif()){
@@ -166,5 +184,29 @@ class AdminController extends AbstractController
     }
 
 
+// ADMINISTRATION DES VILLES
+    #[Route('/villes', name: '_villes')]
+    public function adminVille(Request $request,VilleRepository $villeRepository, EntityManagerInterface $em) : Response
+    {
+        $villes= $villeRepository->findAll();
+
+        $newVille = new Ville();
+        $form = $this->createForm(VilleType::class,$newVille);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() and  $form->isValid()){
+            $em->persist($newVille);
+            $em->flush();
+
+            $this->addFlash('success',"La ville ".$newVille->getNom()." a été ajoutée !");
+
+            return $this->redirectToRoute('app_admin_villes');
+        }
+
+        return $this->render('admin/adminVilles.html.twig', [
+            'villes'=>$villes,
+            'form'=>$form->createView(),
+        ]);
+    }
 
 }
