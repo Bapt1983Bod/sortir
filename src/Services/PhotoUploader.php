@@ -17,7 +17,7 @@ class PhotoUploader
         $this->slugger = $slugger;
     }
 
-    public function photoUpload($user, $photo)
+    public function photoUpload($user, $photo) : void
     {
         if ($photo instanceof UploadedFile){
 
@@ -28,7 +28,7 @@ class PhotoUploader
         }
     }
 
-    public function deletePhoto($user)
+    public function deletePhoto($user) : void
     {
         if($user->getPhoto() and file_exists('images/profil/'.$user->getPhoto())){
             unlink('images/profil/'.$user->getPhoto());
