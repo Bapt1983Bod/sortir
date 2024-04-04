@@ -37,25 +37,8 @@ class ProfilController extends AbstractController
         // Vérification si formulaire soumis et valide
         if ($form->isSubmitted() and $form->isValid()){
 
-            // On récupère l'objet
+            // Gestion de la photo de profil
             $photo = $form->get('image_file')->getData();
-
-//            // Vérif si présence d'une photo de profil
-//            if ($form->get('image_file')->getData() instanceof UploadedFile){
-//                // suppression de la photo déjà présente
-//                if($user->getPhoto() && file_exists('images/profil/'.$user->getPhoto())){
-//                    unlink('images/profil/'.$user->getPhoto());
-//                }
-//
-//
-//                // standardisation du nom du fichier
-//                $fileName = $slugger->slug($user->getNom().$user->getPrenom()).uniqid().'.'.$photo->guessExtension();
-//                // renommage et transfert du fichier dans le dossier
-//                $photo->move('images/profil',$fileName);
-//
-//                $user->setPhoto($fileName);
-//            }
-
             $uploadPhoto->uploadPhoto($photo,$user);
 
             $em->persist($user);
