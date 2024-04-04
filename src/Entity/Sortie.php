@@ -28,7 +28,7 @@ class Sortie
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\Expression('this.getDateHeureDebut() < this.getDateLimiteInscription()', message: 'La date de la sortie doit être ultérieure à la date de debut')]
+    #[Assert\Expression('this.getDateHeureDebut() > this.getDateLimiteInscription()', message: 'La date de la sortie doit être ultérieure à la date de debut')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]

@@ -22,7 +22,7 @@ class CreationSortieType extends AbstractType
             ->add('nom')
             ->add('dateHeureDebut', null, [
                 'widget' => 'single_text',
-                'attr'   => ['min' => ( new \DateTime() )->format('Y-m-d H:i')]
+                'attr'   => ['min' => ( new \DateTime('+1 day') )->format('Y-m-d H:i')]
             ])
             ->add('duree',null,[
                 'label' => 'Duree en minutes',
@@ -31,7 +31,7 @@ class CreationSortieType extends AbstractType
             ])
             ->add('dateLimiteInscription', null, [
                 'widget' => 'single_text',
-                'attr'   => ['min' => ( new \DateTime('tomorrow') )->format('Y-m-d'),
+                'attr'   => ['min' => ( new \DateTime('now') )->format('Y-m-d'),
                 'message' =>'La date limite d\'inscription ne peux pas être avant la date de début']
             ])
             ->add('nbInscriptionsmax',null ,[

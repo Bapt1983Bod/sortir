@@ -33,7 +33,8 @@
     </tr>
     </tbody>
     {% if(app.user == sortie.organisateur) %}
-    <button><a href="{{ path('app_sortie_publish', {'id': sortie.id}) }}">Publier</a></button>
+        <button><a href="{{ path('app_sortie_publish', {'id': sortie.id}) }}">Publier</a></button>
+        <button><a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a></button>
     {% endif %}
 </table>
 {% endblock %}
