@@ -8,6 +8,7 @@ use App\Form\ProfileType;
 use App\Form\SiteType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use App\Services\HashPassword;
 use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,8 +77,11 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateurs/delete/{id}', name: '_utilisateurs/delete')]
-    public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em)
+    public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em, PhotoUploader $photoUploader)
     {
+        // suppression de la photo du participant
+        $photoUploader->deletePhoto($participant);
+
         $em->remove($participant);
         $em->flush();
 
@@ -87,7 +91,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateurs/update/{id}', name: '_utilisateurs/update')]
-    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader)
+    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword)
     {
         if (!$participant){
             $participant = new Participant();
@@ -108,8 +112,7 @@ class AdminController extends AbstractController
             // Vérifie si un nouveau mot de passe a été fourni
             if ($plainPassword) {
                 // Hasher le mot de passe
-                $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
-                $participant->setPassword($hashedPassword);
+                $hashPassword->hashPassword($participant, $plainPassword);
             }
 
             $em->persist($participant);
