@@ -12,6 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use function Webmozart\Assert\Tests\StaticAnalysis\minLength;
 
 class CreationSortieType extends AbstractType
 {
@@ -21,13 +22,24 @@ class CreationSortieType extends AbstractType
             ->add('nom')
             ->add('dateHeureDebut', null, [
                 'widget' => 'single_text',
+                'attr'   => ['min' => ( new \DateTime() )->format('Y-m-d H:i')]
             ])
-            ->add('duree')
+            ->add('duree',null,[
+                'label' => 'Duree en minutes',
+                'attr' => ['min' => 15 , 'max' => 180],
+
+            ])
             ->add('dateLimiteInscription', null, [
                 'widget' => 'single_text',
+                'attr'   => ['min' => ( new \DateTime('tomorrow') )->format('Y-m-d'),
+                'message' =>'La date limite d\'inscription ne peux pas être avant la date de début']
             ])
-            ->add('nbInscriptionsmax')
-            ->add('infosSortie')
+            ->add('nbInscriptionsmax',null ,[
+                'attr' => ['min' => 1, 'max' => 50]]
+            )
+            ->add('infosSortie', null, [
+                'attr' => ['minLength' => 10, 'maxlength' => 500]
+            ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'choice_label' => 'nom',
