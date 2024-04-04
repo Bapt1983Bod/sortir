@@ -93,7 +93,7 @@
                         {% if(not sortie.participants.contains(user)) and (sortie.nbInscriptionsmax > sortie.participants|length) %}
                             <td><a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a></td>
                         {% endif %}
-                        {% else if (sortie.participants.contains(user)) %}
+                        {% if (sortie.participants.contains(user)) %}
                             <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
                             {% else %}
                             <td> </td>
