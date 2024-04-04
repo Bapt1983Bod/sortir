@@ -5,7 +5,7 @@ namespace App\Services;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class UploadPhoto
+class uploadPhoto
 {
 
 

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Form\ProfileType;
 use App\Repository\ParticipantRepository;
-use App\Services\UploadPhoto;
+use App\Services\uploadPhoto;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
