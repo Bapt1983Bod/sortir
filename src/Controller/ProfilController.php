@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ProfileType;
 use App\Form\RegistrationFormType;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,7 +19,17 @@ class ProfilController extends AbstractController
     #[Route('/profil', name: 'app_profil')]
     public function index(): Response
     {
-        return $this->render('profil/index.html.twig');
+        return $this->render('monProfil.html.twig');
+    }
+
+    #[Route('/profil/{id}', name: 'app_profil_show')]
+    public function showprofil($id, ParticipantRepository $participantRepository): Response
+    {
+        $participant = $participantRepository->find($id);
+
+        return $this->render('profil/profilParticipant.html.twig', [
+            "participant"=>$participant
+        ]);
     }
 
     #[Route('/profil/update', name: 'app_profil_update')]
