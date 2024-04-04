@@ -8,6 +8,7 @@ use App\Form\ProfileType;
 use App\Form\SiteType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +87,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateurs/update/{id}', name: '_utilisateurs/update')]
-    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request)
+    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader)
     {
         if (!$participant){
             $participant = new Participant();
@@ -102,7 +103,7 @@ class AdminController extends AbstractController
 
             // Gestion photo de profil
             $photo = $formUser->get('image_file')->getData();
-            //$uploadPhoto->uploadPhoto($photo,$participant);
+            $photoUploader->photoUpload($participant, $photo);
 
             // Vérifie si un nouveau mot de passe a été fourni
             if ($plainPassword) {
