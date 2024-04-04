@@ -19,9 +19,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'app_profil')]
-    public function index(): Response
+    public function myProfil(): Response
     {
-        return $this->render('monProfil.html.twig');
+        return $this->render('profil/monProfil.html.twig');
     }
 
     #[Route('/profil/{id}', name: 'app_profil_show')]
@@ -63,6 +63,8 @@ class ProfilController extends AbstractController
 
                 $user->setPhoto($fileName);
             }
+
+
 
             $em->persist($user);
             $em->flush();
