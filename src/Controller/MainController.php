@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Site;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Services\UpdateStatus;
 
 
 class MainController extends AbstractController
@@ -18,8 +20,9 @@ class MainController extends AbstractController
 
 
     #[Route('/main', name: 'app_main')]
-    public function index(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository, UpdateStatus $UpdateStatus): Response
     {
+        $UpdateStatus->updateStatus($entityManager, $sortieRepository, $etatRepository);
         // Récupérer les paramètres de la requête
         $siteId = $request->query->get('site');
         $keyword = $request->query->get('keyword');

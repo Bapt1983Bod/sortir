@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use DateTime;
@@ -126,6 +127,13 @@ class SortieRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
+    public function findByEtat(Etat $etat): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.etat = :etat')
+            ->setParameter('etat', $etat)
+            ->getQuery()
+            ->getResult();
+    }
 
 }
