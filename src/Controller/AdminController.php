@@ -77,7 +77,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateurs/delete/{id}', name: '_utilisateurs/delete')]
-    public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em, PhotoUploader $photoUploader)
+    public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em, PhotoUploader $photoUploader) : Response
     {
         // suppression de la photo du participant
         $photoUploader->deletePhoto($participant);
@@ -91,7 +91,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateurs/update/{id}', name: '_utilisateurs/update')]
-    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword)
+    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword) : Response
     {
         if (!$participant){
             $participant = new Participant();
@@ -128,6 +128,43 @@ class AdminController extends AbstractController
             'user'=>$participant
         ]);
     }
+
+    #[Route('/utilisateurs/setRole/{id}',name: "_utilisateurs/setRole")]
+    public function setRole(Participant $participant, EntityManagerInterface $em) : Response
+    {
+        if ($participant->isAdministrateur()) {
+            $participant->setAdministrateur(false);
+            $participant->setRoles(["ROLE_USER"]);
+        } else {
+            $participant->setAdministrateur(true);
+            $participant->setRoles(["ROLE_ADMIN"]);
+        }
+
+        $em->persist($participant);
+        $em->flush();
+
+        $this->addFlash('success', "Le role de l'utilisateur ".$participant->getPrenom()." ".$participant->getNom()." a été mis à jour");
+
+        return $this->redirectToRoute("app_admin_utilisateurs");
+    }
+
+    #[Route('/utilisteurs/actif/{id}', name: '_utilisteurs/actif')]
+    public function setActif(Participant $participant, EntityManagerInterface $em): Response
+    {
+        if($participant->isActif()){
+            $participant->setActif(false);
+        } else {
+            $participant->setActif(true);
+        }
+
+        $em->persist($participant);
+        $em->flush();
+
+        $this->addFlash('success', "Le statut de l'utilisateur ".$participant->getPrenom()." ".$participant->getNom()." a été mis à jour");
+
+        return $this->redirectToRoute("app_admin_utilisateurs");
+    }
+
 
 
 }
