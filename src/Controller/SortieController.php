@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\CreationSortieType;
 use App\Repository\SortieRepository;
@@ -23,10 +24,11 @@ class SortieController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             $sortie->setOrganisateur($this->getUser());
+            $sortie->setEtat($em->getRepository(Etat::class)->find(1));
             $sortie = $form->getData();
             $em->persist($sortie);
             $em->flush();
-            return $this->redirectToRoute('app_main');
+            return $this->redirectToRoute('app_sortie_detail', ['id' => $sortie->getId()]);
         }
 
         return $this->render('sortie/index.html.twig', [
@@ -80,6 +82,14 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/publish/{id}', name: 'app_sortie_publish')]
+    public function publish(Sortie $sortie, EntityManagerInterface $em): Response
+    {
+        $sortie->setEtat($em->getRepository(Etat::class)->find(2));
+        $em->persist($sortie);
+        $em->flush();
+        return $this->redirectToRoute('app_profil');
+    }
 
 
 }

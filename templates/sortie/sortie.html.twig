@@ -32,5 +32,8 @@
     {% endfor %}</td>
     </tr>
     </tbody>
+    {% if(app.user == sortie.organisateur) %}
+    <button><a href="{{ path('app_sortie_publish', {'id': sortie.id}) }}">Publier</a></button>
+    {% endif %}
 </table>
 {% endblock %}
