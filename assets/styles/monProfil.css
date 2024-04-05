@@ -1,0 +1,62 @@
+.list-group{
+    width: 20%;
+    height: 25%;
+
+}
+
+
+.mon_profil {
+    display: flex; /* Utiliser flexbox pour aligner les éléments */
+    flex-direction: column; /* Aligner les éléments verticalement */
+    align-items: center; /* Centrer les éléments horizontalement */
+    text-align: center; /* Centrer le texte horizontalement */
+
+}
+.mon_profil .btn {
+    margin: 5px; /* Espacement entre les boutons */
+    width: auto;
+}
+
+
+.photo_profil {
+    width: 250px;
+    height: auto; /* Garder le ratio hauteur/largeur de l'image */
+    /* Espacement en bas de l'image */
+}
+
+
+/* Media query pour les smartphones */
+@media screen and (max-width: 1200px) {
+    /* Réduire la taille de la police */
+    .mon_profil h1 {
+        font-size: 1000px;
+
+    }
+
+    /* Réduire la largeur de l'image de profil */
+    .photo_profil {
+        width: 1000px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    
+    .list-group{
+        width: 550px;
+        font-size: 40px;
+
+    }
+
+    /* Réduire la marge des boutons */
+    .mon_profil .btn {
+        margin: 3px;
+        font-size: 50px;
+    }
+
+    .nav-item {
+            margin: 3px;
+            font-size: 50px;
+        }
+
+    }
+
+
