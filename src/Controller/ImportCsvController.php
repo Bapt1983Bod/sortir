@@ -12,10 +12,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Services\HashPassword;
 
 
 class ImportCsvController extends AbstractController
 {
+
+    private $hashPasswordService;
+
+    public function __construct(HashPassword $hashPasswordService)
+    {
+        $this->hashPasswordService = $hashPasswordService;
+    }
+
+
     #[Route('/import/csv', name: 'app_import_csv')]
     public function importCsv(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepo): Response
     {
@@ -30,18 +40,28 @@ class ImportCsvController extends AbstractController
             try {
                 $file = fopen($csvFile->getPathname(), 'r'); //lire le contenu ligne par ligne
 
-                fgetcsv($file); // Ignorer les premières lignes
+                fgetcsv($file); // Ignorer la première ligne
 
 
                 while (($line = fgetcsv($file)) !== FALSE) {
                     foreach($line as $import) {
                         $data = explode(";", $import);
-                        //dd($data);
+
                         $participant = new Participant();
                         $participant->setNom($data[0]);
                         $participant->setPrenom($data[1]);
                         $participant->setTelephone($data[2]);
-                        $participant->setPassword($data[3]);
+
+
+
+                        $password = $data[3];
+                        // Service pour hacher le mot de passe
+                        $hashedPassword = $this->hashPasswordService->hashPassword($password);
+                        // Enregistrez l'utilisateur avec le mot de passe haché
+                        $participant->setPassword($hashedPassword);
+
+
+
                         $participant->setAdministrateur($data[4]);
                         $participant->setActif($data[5]);
 
@@ -50,31 +70,18 @@ class ImportCsvController extends AbstractController
 
 
                         $participant->setEmail($data[7]);
+
                         $tableau = [];
                         $tableau[] = $data[8];
                         $participant->setRoles($tableau);
 
-                        //dd($participant);
+
 
                         $entityManager->persist($participant);
                         $entityManager->flush();
 
                     }
-                    //$data = explode(";", $line);
-                    //dd($line);
-                    /*$participant = new Participant();
-                    $participant->setNom($line[0]);
-                    $participant->setPrenom($line[1]);
-                    $participant->setTelephone($line[2]);
-                    $participant->setPassword($line[3]);
-                    $participant->setAdministrateur($line[4]);
-                    $participant->setActif($line[5]);
-                    $participant->setSite($line[6]);
-                    $participant->setEmail($line[7]);
-                    $participant->setRoles(json_decode($line[8], true));
 
-
-                    $entityManager->persist($participant);*/
                 }
 
                 fclose($file);
