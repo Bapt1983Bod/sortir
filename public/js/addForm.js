@@ -1,14 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+
     const addFormBtn = document.getElementById('addFormBtn');
-    const addForm = document.getElementById('addForm');
 
-    addFormBtn.addEventListener('click', (event) => {
-        // event.preventDefault();
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'addFormBtn') {
 
-        if (addForm.style.display === 'none' || addForm.style.display === '') {
-            addForm.style.display = 'block';
-        } else {
-            addForm.style.display = 'none';
+            event.preventDefault();
+
+            const addForm = document.getElementById('addForm');
+
+            if (addForm.style.display === 'none' || addForm.style.display === '') {
+                addForm.style.display = 'block';
+            } else {
+                addForm.style.display = 'none';
+            }
         }
     });
 });

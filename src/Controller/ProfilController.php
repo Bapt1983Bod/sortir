@@ -7,6 +7,7 @@ use App\Repository\ParticipantRepository;
 use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,8 +39,11 @@ class ProfilController extends AbstractController
         if ($form->isSubmitted() and $form->isValid()){
 
             // Gestion de la photo de profil
-            $photo = $form->get('image_file')->getData();
-            $photoUploader->photoUpload($user,$photo);
+            if($form->get('image_file')->getData() instanceof UploadedFile){
+                $photo = $form->get('image_file')->getData();
+                $filename = $photoUploader->photoUpload($user, $photo);
+                $user->setPhoto($filename);
+            }
 
             $em->persist($user);
             $em->flush();

@@ -17,15 +17,14 @@ class PhotoUploader
         $this->slugger = $slugger;
     }
 
-    public function photoUpload($user, $photo) : void
+    public function photoUpload($user, $photo) : string
     {
-        if ($photo instanceof UploadedFile){
+        $this->deletePhoto($user);
 
-            $this->deletePhoto($user);
+        $fileName = $this->slugger->slug($user->getNom().$user->getPrenom()).'.'.uniqid().'.'.$photo->guessExtension();
+        $photo->move('images/profil', $fileName);
 
-            $fileName = $this->slugger->slug($user->getNom().$user->getPrenom()).'.'.uniqid().'.'.$photo->guessExtension();
-            $photo->move('images/profil', $fileName);
-        }
+        return $fileName;
     }
 
     public function deletePhoto($user) : void

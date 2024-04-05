@@ -7,10 +7,9 @@ use App\Entity\Participant;
 class HashPassword
 {
 
-    public function hashPassword (Participant $user, $passwordToHash) : void
+    public function hashPassword ($passwordToHash) : string
     {
-        $hashedPassword = password_hash($passwordToHash,PASSWORD_BCRYPT);
-        $user->setPassword($hashedPassword);
+       return $hashedPassword = password_hash($passwordToHash,PASSWORD_BCRYPT);
     }
 
 }

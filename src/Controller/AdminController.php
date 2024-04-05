@@ -15,6 +15,7 @@ use App\Services\HashPassword;
 use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,6 +27,7 @@ class AdminController extends AbstractController
 {
 
 // ADMINISTRATION DES SITES
+
     #[Route('/site', name: '_site')]
     public function adminSites (SiteRepository $siteRepository, Request $request): Response
     {
@@ -80,6 +82,7 @@ class AdminController extends AbstractController
 
 
 // ADMINISTRATION DES UTILISATEURS
+
     #[Route('/utilisateurs', name: '_utilisateurs')]
     public function adminUtilisateurs (ParticipantRepository $participantRepository) : Response
     {
@@ -122,13 +125,19 @@ class AdminController extends AbstractController
             $plainPassword = $formUser->get('plainPassword')->getData();
 
             // Gestion photo de profil
-            $photo = $formUser->get('image_file')->getData();
-            $photoUploader->photoUpload($participant, $photo);
+            if($formUser->get('image_file')->getData() instanceof UploadedFile){
+                $photo = $formUser->get('image_file')->getData();
+                $filename = $photoUploader->photoUpload($participant, $photo);
+                $participant->setPhoto($filename);
+            }
+
+
 
             // Vérifie si un nouveau mot de passe a été fourni
             if ($plainPassword) {
                 // Hasher le mot de passe
-                $hashPassword->hashPassword($participant, $plainPassword);
+               $password = $hashPassword->hashPassword($plainPassword);
+               $participant->setPassword($password);
             }
 
             $em->persist($participant);
@@ -185,6 +194,7 @@ class AdminController extends AbstractController
 
 
 // ADMINISTRATION DES VILLES
+
     #[Route('/villes', name: '_villes')]
     public function adminVille(Request $request,VilleRepository $villeRepository, EntityManagerInterface $em) : Response
     {
@@ -208,5 +218,7 @@ class AdminController extends AbstractController
             'form'=>$form->createView(),
         ]);
     }
+
+    // ADMINISTRATION DES SORTIES
 
 }
