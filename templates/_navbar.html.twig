@@ -8,17 +8,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin_site') }}">
+                            Admin
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_main') }}">
                         Accueil
                     </a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_creation') }}">
-                        Ajouter Une Sortie
-                    </a>
-                </li>
+
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_profil') }}">
@@ -26,19 +29,13 @@
                     </a>
                 </li>
                 {% endif %}
-                {% if is_granted('ROLE_ADMIN') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_admin_site') }}">
-                        Admin
-                    </a>
-                </li>
-                {% endif %}
+
 
                 {% if is_granted('IS_AUTHENTICATED') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}"
                            title="Go back to Logout Page">
-                            Logout
+                            Se déconnecter
                         </a>
                     </li>
                 {% else %}
