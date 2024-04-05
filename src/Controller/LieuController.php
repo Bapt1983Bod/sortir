@@ -24,7 +24,13 @@ class LieuController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('app_creation');
         }
-        $this->addFlash('info', "Lieu non crée une erreur c'est produite");
+        if($form->isSubmitted() && !$form->isValid())
+        {
+            $this->addFlash('info', "Lieu non crée une erreur c'est produite");
+            return $this->render('lieu/index.html.twig', [
+                'form' => $form,
+            ]);
+        }
         return $this->render('lieu/index.html.twig', [
             'form' => $form,
         ]);
