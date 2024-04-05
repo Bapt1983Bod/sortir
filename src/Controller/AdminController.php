@@ -7,14 +7,12 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Form\ProfileType;
-use App\Form\SiteType;
-use App\Form\VilleType;
 use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
-use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use App\Services\AdminSiteService;
+use App\Services\AdminVilleService;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -195,25 +193,20 @@ class AdminController extends AbstractController
 // ADMINISTRATION DES VILLES
 
     #[Route('/villes', name: '_villes')]
-    public function adminVille(Request $request,VilleRepository $villeRepository, EntityManagerInterface $em) : Response
+    public function adminVille(Request $request,VilleRepository $villeRepository, EntityManagerInterface $em, AdminVilleService $adminVilleService) : Response
     {
-        if ($request->query->get('keyword')){
-            $villes = $villeRepository ->findByKeyword($request->query->get('keyword'));
-        } else {
-            $villes = $villeRepository->findAll();
-        }
 
-        $newVille = new Ville();
-        $form = $this->createForm(VilleType::class,$newVille);
-        $form->handleRequest($request);
+        $villes = $adminVilleService->listeVilles($request);
 
-        if($form->isSubmitted() and  $form->isValid()){
-            $em->persist($newVille);
-            $em->flush();
+        // Ajout d'un ville
+        $form = $adminVilleService->getVilleForm();
 
-            $this->addFlash('success',"La ville ".$newVille->getNom()." a été ajoutée !");
-
+        try {
+            $adminVilleService->addVille($request);
+            $this->addFlash('success', 'La ville a été ajoutée !');
             return $this->redirectToRoute('app_admin_villes');
+        } catch (\Exception $exception) {
+
         }
 
         return $this->render('admin/adminVilles.html.twig', [
