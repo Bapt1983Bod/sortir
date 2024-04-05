@@ -1,0 +1,30 @@
+.flex-grow-1{
+    width: 100%;
+}
+.container{
+    width: 100%;
+}
+.container-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    align-items: center;
+}
+.header-logo{
+    display: block;
+    width: 40%;
+    margin-left: 5%;
+}
+.navbar{
+    display: flex;
+    justify-content: end;
+    margin-right: 5%;
+    padding: 2%;
+}
+.font{
+    color: red;
+}
+
+.form-group2{
+    width: 40%;
+}
