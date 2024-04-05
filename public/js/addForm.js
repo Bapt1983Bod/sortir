@@ -27,6 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
         modifyBtn.addEventListener('click', function(event) {
             event.preventDefault();
 
+            // Masquer tous les formulaires form2
+            const allForms = document.querySelectorAll('[id^="addSecondForm_"]');
+            allForms.forEach(function(form) {
+                form.style.display = 'none';
+            });
+
             // Construisez l'ID du div du formulaire en utilisant l'ID du bouton
             const formDivId = 'addSecondForm_' + modifyBtn.id.split('_')[1];
             const addForm = document.getElementById(formDivId);
