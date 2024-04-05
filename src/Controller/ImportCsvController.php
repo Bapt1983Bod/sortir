@@ -34,8 +34,8 @@ class ImportCsvController extends AbstractController
 
 
                 while (($line = fgetcsv($file)) !== FALSE) {
-                    foreach($line as $aaa) {
-                        $data = explode(";", $aaa);
+                    foreach($line as $import) {
+                        $data = explode(";", $import);
                         //dd($data);
                         $participant = new Participant();
                         $participant->setNom($data[0]);
@@ -50,9 +50,9 @@ class ImportCsvController extends AbstractController
 
 
                         $participant->setEmail($data[7]);
-                        $arr = [];
-                        $arr[] = $data[8];
-                        $participant->setRoles($arr);
+                        $tableau = [];
+                        $tableau[] = $data[8];
+                        $participant->setRoles($tableau);
 
                         //dd($participant);
 
