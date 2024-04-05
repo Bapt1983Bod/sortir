@@ -1,37 +1,65 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfilController!{% endblock %}
+{% block title %}Modifier profil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/profil_update.css') }}">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+
 
 <div class="example-wrapper">
 
-    <h1>Hello {{ app.user.prenom }} ! ✅</h1>
+    <h1>Hello {{ app.user.prenom }} ! </h1>
 
-    {{ form_start(form) }}
-        {{ form_row( form.nom) }}
-        {{ form_row( form.prenom) }}
-        {{ form_row( form.telephone) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.plainPassword, {label: 'Password'}) }}
-        {{ form_row( form.site ) }}
 
-            {% if app.user.photo %}
-                <img src="{{ asset('images/profil/'~ app.user.photo) }}" alt="Photo de profil">
-            {% else %}
-                <img src="{{ asset('images/profil/defaultProfil.png') }}" alt="Photo de profil">
-            {% endif %}
+    {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+    <div class="col-md-6">
+        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.prenom, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.telephone, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.plainPassword, {'attr': {'class': 'form-control'}, 'label': 'Password'}) }}
+    </div>
+
+
+
+
+    <div class="col-md-6">
+        {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+
+
+    {% if app.user.photo %}
+        <img src="{{ asset('images/profil/'~ app.user.photo) }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
+    {% else %}
+        <img src="{{ asset('images/profil/defaultProfil.png') }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
+    {% endif %}
+
+
+
+
         {{ form_row( form.image_file) }}
-
-        <button type="submit" class="btn btn-danger">Modifier</button>
+    <div class="btn-group">
+        <button class="btn btn-secondary"><a href="{{ path('app_profil') }}">Retour</a></button>
+        <button type="submit" class="btn btn-primary">Modifier</button>
     {{ form_end(form) }}
+    </div>
 
 
-    <button class="btn btn-dark"><a href="{{ path('app_profil') }}">Retour</a></button>
+
 
 
 </div>
