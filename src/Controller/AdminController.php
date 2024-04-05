@@ -4,13 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Entity\Site;
+use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Form\ProfileType;
 use App\Form\SiteType;
 use App\Form\VilleType;
+use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Services\AdminSiteService;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -31,63 +35,45 @@ class AdminController extends AbstractController
 
     // affichage liste des sites et ajout/màj de site
     #[Route('/site', name: '_site')]
-    public function adminSites (SiteRepository $siteRepository, Request $request, EntityManagerInterface $em): Response
+    public function adminSites (Request $request, AdminSiteService $adminSiteService): Response
     {
-
-        if ($request->query->get('keyword')){
-            $sites = $siteRepository ->findByKeyword($request->query->get('keyword'));
-        } else {
-            $sites = $siteRepository->findAll();
-        }
+        $sites = $adminSiteService->listeSites($request);
+        $form = $adminSiteService->getSiteForm();
 
         // Ajout d'un site
-
-        $newSite = new Site();
-        $form = $this->createForm(SiteType::class,$newSite);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() and  $form->isValid()){
-            $em->persist($newSite);
-            $em->flush();
-
-            $this->addFlash('success',"La ville ".$newSite->getNom()." a été ajoutée !");
+        try {
+            $adminSiteService->addSite($request);
+            $this->addFlash('success',"Le site a été ajouté !");
 
             return $this->redirectToRoute('app_admin_site');
+
+        } catch (\Exception $exception){
         }
 
         // Modification du site
-
-        if ($request->query->get("name")){
-            $site = $siteRepository->find($request->query->get('id'));
-            $site->setNom($request->query->get("name"));
-
-            $em->persist($site);
-            $em->flush();
-
-            $this->addFlash('success',"La ville ".$site->getNom()." a été modifiée !");
+        try {
+            $adminSiteService->updateSite($request);
+            $this->addFlash('success',"Le site a été modifié !");
 
             return $this->redirectToRoute('app_admin_site');
+        } catch (\Exception $exception){
         }
 
         return $this->render('admin/adminSites.html.twig', [
             'sites' => $sites,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ]);
     }
 
     // Suppression d'un site
     #[Route('/site/delete/{id}', name: '_site_delete')]
-    public function deleteSite(Site $site, EntityManagerInterface $em) : Response
+    public function deleteSite(Site $site, AdminSiteService $adminSiteService) : Response
     {
         try{
-            $em->remove($site);
-            $em->flush();
-
+            $adminSiteService->deleteSite($site);
             $this->addFlash('success', 'Suppression de '.$site->getNom().' réalisée !');
-        } catch (ForeignKeyConstraintViolationException $exception){
+        }  catch (\Exception $exception) {
             $this->addFlash("danger", "Impossible de supprimer le site ".$site->getNom()." car il est lié à d'autres éléments (Participants).");
-        } catch (\Exception $exception) {
-            $this->addFlash("danger", "Une erreur s'est produite lors de la suppression de la ville ".$site->getNom()." : ".$exception->getMessage());
         }
 
         return $this->redirectToRoute('app_admin_site');
@@ -255,7 +241,36 @@ class AdminController extends AbstractController
     }
 
 
+// ADMINISTRATION DES SORTIES
 
-    // ADMINISTRATION DES SORTIES
+    // affichage des sorties
+    #[Route('/sorties', name: "_sorties")]
+    public function adminSortie(Request $request, EntityManagerInterface $em, SortieRepository $sortieRepository)
+    {
+        if ($request->query->get('keyword')){
+            $sorties = $sortieRepository ->findByKeyword($request->query->get('keyword'));
+        } else {
+            $sorties = $sortieRepository->findAll();
+        }
 
+        return $this->render('admin/adminSorties.html.twig', [
+            'sorties'=>$sorties,
+            ]);
+    }
+
+    #[Route('/sorties/canceled/{id}', name: "_sorties_canceled")]
+    public function canceledSortie(Sortie $sortie, EntityManagerInterface $em, EtatRepository $etatRepository) : Response
+    {
+        foreach ($sortie->getParticipants() as $participant)  {
+            $sortie->removeParticipant($participant);
+        }
+
+        $canceled = $etatRepository->find(6);
+
+        $sortie->setEtat($canceled);
+        $em->persist($sortie);
+        $em->flush();
+
+        return $this->redirectToRoute("app_admin_sorties");
+    }
 }

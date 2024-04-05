@@ -1,0 +1,59 @@
+{% extends 'admin/index.html.twig' %}
+
+
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block div %}
+
+    <h2>Gestion des sorties</h2>
+
+    <form action="{{ path('app_admin_sorties') }}" method="get">
+        <div class="form-group">
+            <label for="keyword">Rechercher :</label>
+            <input type="text" name="keyword" id="keyword" class="form-control"><br>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+    <br>
+
+    <br>
+    <br>
+    <table class="table table-dark">
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Organisateur</th>
+            <th scope="col">Site</th>
+            <th scope="col">Etat</th>
+            <th scope="col">Date et Heure de début</th>
+            <th scope="col">Duree (minutes)</th>
+            <th scope="col">Date limite d'inscription</th>
+            <th scope="col">Nb d'inscrits</th>
+            <th scope="col">Lieu</th>
+
+
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sortie in sorties|sort((a,b) => a.nom <=> b.nom)%}
+        <tr>
+            <td>{{ sortie.nom }}</td>
+            <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
+            <td>{{ sortie.site.nom }}</td>
+            <td>{{ sortie.etat.libelle }}</td>
+            <td>{{ sortie.dateHeureDebut|date('d/m/y H:i') }}</td>
+            <td>{{ sortie.duree }}</td>
+            <td>{{ sortie.dateLimiteInscription|date('d/m/y') }}</td>
+            <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsmax }}</td>
+            <td>{{ sortie.lieu.nom }} ({{ sortie.lieu.ville.nom }})</td>
+
+            <td>{% if sortie.etat.libelle != "Annulée" %}<button class="btn btn-danger"><a href="{{ path('app_admin_sorties_canceled',{'id': sortie.id }) }}">Annuler la sortie</a></button>{% endif %}</td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

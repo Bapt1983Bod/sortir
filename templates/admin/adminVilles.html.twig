@@ -44,7 +44,6 @@
             <td>{{ ville.codePostal }}</td>
             <td>
                     <button class="btn btn-danger"><a href="{{ path('app_admin_villes_delete',{'id' : ville.id }) }}">Supprimer</a></button>
-{#                    <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : ville.id }) }}">Modifier</a></button>#}
             </td>
         </tr>
         {% endfor %}
