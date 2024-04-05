@@ -8,9 +8,11 @@
 
 {% block body %}
     <div class="body">
+        {% if(user) %}
         <div>
             Participant : {{ user.prenom }} {{ user.nom|upper}}
         </div>
+        {% endif %}
         <div class="container">
             <h4 class="display-5, font">Filtrer les sorties</h4>
 
