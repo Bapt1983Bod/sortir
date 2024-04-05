@@ -17,3 +17,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Sélectionnez tous les boutons "Modifier" par leur nouvelle classe
+    const modifyBtns = document.querySelectorAll('.modify-btn');
+
+    modifyBtns.forEach(function(modifyBtn) {
+        modifyBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // Construisez l'ID du div du formulaire en utilisant l'ID du bouton
+            const formDivId = 'addSecondForm_' + modifyBtn.id.split('_')[1];
+            const addForm = document.getElementById(formDivId);
+
+            if (addForm.style.display === 'none' || addForm.style.display === '') {
+                addForm.style.display = 'inline-block';
+            } else {
+                addForm.style.display = 'none';
+            }
+        });
+    });
+});

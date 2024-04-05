@@ -8,21 +8,21 @@
 
     <h2>Gestion des villes</h2>
 
-    <form action="{{ path('app_admin_site') }}" method="get">
+    <form action="{{ path('app_admin_villes') }}" method="get">
         <div class="form-group">
             <label for="keyword">Rechercher :</label>
             <input type="text" name="keyword" id="keyword" class="form-control"><br>
             <button type="submit" class="btn btn-primary">Rechercher</button>
-
         </div>
     </form>
     <br>
     <button class="btn btn-secondary" id="addFormBtn">Ajouter une ville</button>
+
     <!-- Formulaire d'ajout de ville -->
     <div id="addForm" style="display:none;">
         <h3>Ajouter une ville</h3>
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_widget(form) }} <br>
         <button type="submit" class="btn btn-primary">Ajouter</button>
         {{ form_end(form) }}
     </div>
@@ -38,13 +38,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for ville in villes %}
+        {% for ville in villes|sort((a,b) => a.nom <=> b.nom)%}
         <tr>
             <td>{{ ville.nom }}</td>
             <td>{{ ville.codePostal }}</td>
             <td>
-                    <button class="btn btn-danger"><a href="{{ path('app_admin_site_delete',{'id' : ville.id }) }}">Supprimer</a></button>
-                    <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : ville.id }) }}">Modifier</a></button>
+                    <button class="btn btn-danger"><a href="{{ path('app_admin_villes_delete',{'id' : ville.id }) }}">Supprimer</a></button>
+{#                    <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : ville.id }) }}">Modifier</a></button>#}
             </td>
         </tr>
         {% endfor %}

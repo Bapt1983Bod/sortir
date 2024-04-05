@@ -11,9 +11,21 @@
             <label for="keyword">Rechercher :</label>
             <input type="text" name="keyword" id="keyword" class="form-control"><br>
             <button type="submit" class="btn btn-primary">Rechercher</button>
-            <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : 0 }) }}">Ajouter un site</a></button>
+
         </div>
     </form>
+    <br>
+    <button class="btn btn-secondary" id="addFormBtn">Ajouter un site</button>
+
+    <!-- Formulaire d'ajout de ville -->
+    <div id="addForm" style="display:none;">
+        <h3>Ajouter un site</h3>
+        {{ form_start(form) }}
+        {{ form_widget(form) }} <br>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        {{ form_end(form) }}
+    </div>
+
     <br>
     <br>
     <table class="table table-dark">
@@ -24,12 +36,22 @@
         </tr>
         </thead>
         <tbody>
-        {% for site in sites %}
+        {% for site in sites|sort((a,b) => a.nom <=> b.nom) %}
         <tr>
             <td>{{ site.nom }}</td>
             <td>
                     <button class="btn btn-danger"><a href="{{ path('app_admin_site_delete',{'id' : site.id }) }}">Supprimer</a></button>
-                    <button class="btn btn-secondary"><a href="{{ path('app_admin_site_update',{'id' : site.id }) }}">Modifier</a></button>
+                    <button class="btn btn-secondary modify-btn" id="addSecondFormBtn_{{ site.id }}">Modifier</button>
+
+                    <!-- Formulaire de modification de site -->
+                    <div id="addSecondForm_{{ site.id }}" style="display:none;">
+                        <form action="{{ path('app_admin_site') }}" method="get">
+                            <input type="number" value="{{ site.id }}" name="id" id="id" hidden="hidden">
+                            <input type="text" value="{{ site.nom }}" name="name" id="name">
+                            <button type="submit" class="btn btn-primary">Modifier</button>
+                        </form>
+                    </div>
+
             </td>
         </tr>
         {% endfor %}

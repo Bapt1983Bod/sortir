@@ -13,6 +13,7 @@ use App\Repository\SiteRepository;
 use App\Repository\VilleRepository;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -28,8 +29,9 @@ class AdminController extends AbstractController
 
 // ADMINISTRATION DES SITES
 
+    // affichage liste des sites et ajout/màj de site
     #[Route('/site', name: '_site')]
-    public function adminSites (SiteRepository $siteRepository, Request $request): Response
+    public function adminSites (SiteRepository $siteRepository, Request $request, EntityManagerInterface $em): Response
     {
 
         if ($request->query->get('keyword')){
@@ -38,8 +40,38 @@ class AdminController extends AbstractController
             $sites = $siteRepository->findAll();
         }
 
+        // Ajout d'un site
+
+        $newSite = new Site();
+        $form = $this->createForm(SiteType::class,$newSite);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() and  $form->isValid()){
+            $em->persist($newSite);
+            $em->flush();
+
+            $this->addFlash('success',"La ville ".$newSite->getNom()." a été ajoutée !");
+
+            return $this->redirectToRoute('app_admin_site');
+        }
+
+        // Modification du site
+
+        if ($request->query->get("name")){
+            $site = $siteRepository->find($request->query->get('id'));
+            $site->setNom($request->query->get("name"));
+
+            $em->persist($site);
+            $em->flush();
+
+            $this->addFlash('success',"La ville ".$site->getNom()." a été modifiée !");
+
+            return $this->redirectToRoute('app_admin_site');
+        }
+
         return $this->render('admin/adminSites.html.twig', [
             'sites' => $sites,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -47,37 +79,18 @@ class AdminController extends AbstractController
     #[Route('/site/delete/{id}', name: '_site_delete')]
     public function deleteSite(Site $site, EntityManagerInterface $em) : Response
     {
-        $em->remove($site);
-        $em->flush();
-
-        $this->addFlash('success', 'Suppression de '.$site->getNom().' réalisée !');
-
-        return $this->redirectToRoute('app_admin_site');
-    }
-
-    // màj du site
-    #[Route('/site/update/{id}', name: '_site_update')]
-    public function updateSite(?Site $site, EntityManagerInterface $em, Request $request) : Response
-    {
-        if (!$site) {
-            $site = new Site();
-        }
-
-        $formSite = $this->createForm(SiteType::class,$site);
-        $formSite->handleRequest($request);
-
-        if ($formSite->isSubmitted() and $formSite->isValid()){
-            $em->persist($site);
+        try{
+            $em->remove($site);
             $em->flush();
 
-            $this->addFlash('success', 'Site '. $site->getNom().' ajouté ou modifié !');
-
-            return $this->redirectToRoute('app_admin_site');
+            $this->addFlash('success', 'Suppression de '.$site->getNom().' réalisée !');
+        } catch (ForeignKeyConstraintViolationException $exception){
+            $this->addFlash("danger", "Impossible de supprimer le site ".$site->getNom()." car il est lié à d'autres éléments (Participants).");
+        } catch (\Exception $exception) {
+            $this->addFlash("danger", "Une erreur s'est produite lors de la suppression de la ville ".$site->getNom()." : ".$exception->getMessage());
         }
 
-        return $this->render('admin/adminSitesUpdate.html.twig',[
-            'formSite'=>$formSite->createView()
-        ]);
+        return $this->redirectToRoute('app_admin_site');
     }
 
 
@@ -198,7 +211,11 @@ class AdminController extends AbstractController
     #[Route('/villes', name: '_villes')]
     public function adminVille(Request $request,VilleRepository $villeRepository, EntityManagerInterface $em) : Response
     {
-        $villes= $villeRepository->findAll();
+        if ($request->query->get('keyword')){
+            $villes = $villeRepository ->findByKeyword($request->query->get('keyword'));
+        } else {
+            $villes = $villeRepository->findAll();
+        }
 
         $newVille = new Ville();
         $form = $this->createForm(VilleType::class,$newVille);
@@ -218,6 +235,26 @@ class AdminController extends AbstractController
             'form'=>$form->createView(),
         ]);
     }
+
+    //suppression d'une ville
+    #[Route('/villes/delete/{id}', name: "_villes_delete")]
+    public function deleteVille(Ville $ville, EntityManagerInterface $em) : Response
+    {
+        try {
+            $em->remove($ville);
+            $em->flush();
+
+            $this->addFlash("success", "La ville ".$ville->getNom()." a été supprimée !");
+        } catch (ForeignKeyConstraintViolationException $exception){
+            $this->addFlash("danger", "Impossible de supprimer la ville ".$ville->getNom()." car elle est liée à d'autres éléments (Lieux).");
+        } catch (\Exception $exception) {
+            $this->addFlash("danger", "Une erreur s'est produite lors de la suppression de la ville ".$ville->getNom()." : ".$exception->getMessage());
+        }
+
+        return $this->redirectToRoute("app_admin_villes");
+    }
+
+
 
     // ADMINISTRATION DES SORTIES
 

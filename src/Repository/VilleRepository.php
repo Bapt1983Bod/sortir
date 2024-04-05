@@ -45,4 +45,13 @@ class VilleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByKeyword(string $keyword) : array
+    {
+        return $this->createQueryBuilder('ville')
+            ->where('ville.nom LIKE :keyword')
+            ->setParameter('keyword','%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }
