@@ -36,7 +36,8 @@
         </tr>
         </thead>
         <tbody>
-        {% for site in sites|sort((a,b) => a.nom <=> b.nom) %}
+        <tbody>
+                {% for site in sites|sort((a,b) => a.nom <=> b.nom) %}
         <tr>
             <td>{{ site.nom }}</td>
             <td>
@@ -57,5 +58,7 @@
         {% endfor %}
         </tbody>
     </table>
+
+
 
 {% endblock %}
