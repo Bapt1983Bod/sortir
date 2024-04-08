@@ -1,18 +1,63 @@
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block body %}#}
+
+{#    {{ form_start(form) }}#}
+{#    {{ form_row(form.nom) }}#}
+{#    {{ form_row(form.dateHeureDebut) }}#}
+{#    {{ form_row(form.duree) }}#}
+{#    {{ form_row(form.dateLimiteInscription) }}#}
+{#    {{ form_row(form.nbInscriptionsmax) }}#}
+{#    {{ form_row(form.infosSortie) }}#}
+{#    {{ form_row(form.site) }}#}
+{#    {{ form_row(form.lieu) }}#}
+{#    <button><a href="{{ path('app_lieu_create') }}">Créer lieu</a></button>#}
+{#    {{ form_row(form.submit) }}#}
+{#    {{ form_end(form) }}#}
+
+{#{% endblock %}#}
+
 {% extends 'base.html.twig' %}
 
 {% block body %}
 
-    {{ form_start(form) }}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.dateHeureDebut) }}
-    {{ form_row(form.duree) }}
-    {{ form_row(form.dateLimiteInscription) }}
-    {{ form_row(form.nbInscriptionsmax) }}
-    {{ form_row(form.infosSortie) }}
-    {{ form_row(form.site) }}
-    {{ form_row(form.lieu) }}
-    <button><a href="{{ path('app_lieu_create') }}">Créer lieu</a></button>
-    {{ form_row(form.submit) }}
-    {{ form_end(form) }}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                {{ form_start(form, {'attr': {'class': 'mt-4'}}) }}
+                <div class="form-group">
+                    {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.duree, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.nbInscriptionsmax, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.infosSortie, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary"><a href="{{ path('app_lieu_create') }}" style="color: white;">Créer lieu</a></button>
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

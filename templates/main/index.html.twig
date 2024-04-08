@@ -121,7 +121,7 @@
                                 <a href="{{ path('app_sortie_suppr', {'id': sortie.id}) }}">Supprimer</a>
                             {% endif %}
                             {% if(sortie.etat.libelle != 'Crée') %}
-                                <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}">Annuler</a>
+                                <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</span></a>
                             {% endif %}
                             </td>
                         {% endif %}
