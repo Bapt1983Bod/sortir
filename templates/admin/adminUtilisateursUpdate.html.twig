@@ -1,5 +1,10 @@
 {% extends 'admin/index.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/profil_update.css') }}">
+{% endblock %}
+
 {% block div %}
 
     <h2>Gestion des Utilisateurs</h2>
@@ -19,7 +24,7 @@
         {% endif %}
         {{ form_row( form.image_file) }}
 
-        <button type="submit" class="btn btn-danger">Enregistrer</button>
+        <button type="submit" class="btn btn-danger">Enregistrer</button><br>
     {{ form_end(form) }}
 
 {% endblock %}

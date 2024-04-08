@@ -23,13 +23,18 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class)
+            ->add('email', EmailType::class,[
+
+                    'attr' => ['class'=> 'form-control']
+
+            ])
             ->add('plainPassword', RepeatedType::class, [
                 'mapped' => false,
                 'required'=>false,
                 'type' => PasswordType::class,
                 'options' => [
-                    'attr' => ['autocomplete' => 'new-password'],
+                    'attr' => ['autocomplete' => 'new-password',
+                        'class'=> 'form-control'],
                 ],
                 'first_options' => [
                     'constraints' => [
@@ -46,16 +51,24 @@ class ProfileType extends AbstractType
                 ],
                 'invalid_message' => 'Le mot de passe ne correspond pas à sa confirmation'
             ])
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('telephone', TextType::class)
+            ->add('nom', TextType::class ,[
+                'attr' => ['class'=> 'form-control']
+            ])
+            ->add('prenom', TextType::class ,[
+                'attr' => ['class'=> 'form-control']
+            ])
+            ->add('telephone', TextType::class ,[
+                'attr' => ['class'=> 'form-control']
+            ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'choice_label' => 'nom',
+                'attr' => ['class'=> 'form-control']
             ])
             ->add('image_file', FileType::class,[
                 'mapped'=>false,
                 'required'=>false,
+                'attr' => ['class'=> 'form-control'],
                 'constraints' =>[
                     new Image([
                         'mimeTypes'=>[
