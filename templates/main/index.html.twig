@@ -14,7 +14,7 @@
         </div>
         {% endif %}
         <div class="container">
-            <h4 class="display-5, font">Filtrer les sorties</h4>
+
 
 
             <form action="{{ path('app_main') }}" method="GET" class="filter-form">
@@ -66,7 +66,15 @@
 
 
                 <button type="submit" class="btn btn-primary">Rechercher</button>
+                <button type="button" class="btn btn-primary">
+                    <a class="nav-link" href="{{ path('app_creation') }}">Ajouter Une Sortie</a>
+                </button>
+
+
             </form>
+
+
+
 
 
 
@@ -114,27 +122,45 @@
                             {% else %}
                             <td>Inscription fermer</td>
                         {% endif %}
+
+
+
+
+{#                        {% if((app.user == sortie.organisateur)) %}#}
+
+{#                            <td><a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a>#}
+{#                            {% if(sortie.etat.libelle == 'Crée') %}#}
+{#                                <a href="{{ path('app_sortie_suppr', {'id': sortie.id}) }}"><span class="text-danger">Supprimer</span></a>#}
+{#                            {% endif %}#}
+{#                            {% if(sortie.etat.libelle != 'Crée') %}#}
+{#                                <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</span></a>#}
+{#                            {% endif %}#}
+{#                            </td>#}
+{#                            #}
+{#                        {% endif %}#}
+
+
                         {% if((app.user == sortie.organisateur)) %}
 
-                            <td><a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a>
-                            {% if(sortie.etat.libelle == 'Crée') %}
-                                <a href="{{ path('app_sortie_suppr', {'id': sortie.id}) }}"><span class="text-danger">Supprimer</span></a>
-                            {% endif %}
-                            {% if(sortie.etat.libelle != 'Crée') %}
-                                <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</span></a>
-                            {% endif %}
+                            <td>
+
+                                {% if(sortie.etat.libelle == 'Ouverte') %}
+                                    <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</span></a>
+                                {% endif %}
                             </td>
+
                         {% endif %}
+
+
+
+
+
 
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <button>
-                <a class="nav-link" href="{{ path('app_creation') }}">
-                    Ajouter Une Sortie
-                </a>
-            </button>
+
         </div>
     </div>
 {% endblock %}

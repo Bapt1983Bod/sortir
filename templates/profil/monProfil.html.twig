@@ -28,6 +28,10 @@
         <li class="list-group-item">Ville de rattachement : {{ app.user.site.nom }}</li>
     </ul>
 
+    <div class="button-container">
+        <button class="btn btn-secondary"><a href="{{ path('app_main') }}">Retour</a></button>
+        <button class="btn btn-primary"><a href="{{ path('app_updateprofil') }}">Modifier mon profil</a></button>
+    </div>
 
 
     <h2>Mes sorties</h2>
@@ -39,7 +43,7 @@
             <th>Date de début</th>
             <th>Participants</th>
             <th>État</th>
-            <th>Organisateur</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -54,7 +58,7 @@
                     </a>
                 </td>
                 <td>{{ sortie.etat.libelle }}</td>
-                <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
+
 
 
                 {% if(app.user) %}
@@ -92,10 +96,7 @@
     </table>
 
 
-    <div class="button-container">
-    <button class="btn btn-secondary"><a href="{{ path('app_main') }}">Retour</a></button>
-    <button class="btn btn-primary"><a href="{{ path('app_updateprofil') }}">Modifier mon profil</a></button>
-    </div>
+
 
 
 </div>
