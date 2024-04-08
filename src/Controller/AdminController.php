@@ -250,7 +250,7 @@ class AdminController extends AbstractController
         if ($request->query->get('keyword')){
             $sorties = $sortieRepository ->findByKeyword($request->query->get('keyword'));
         } else {
-            $sorties = $sortieRepository->findAll();
+            $sorties = $sortieRepository->findAllOptimised();
         }
 
         return $this->render('admin/adminSorties.html.twig', [
@@ -265,7 +265,7 @@ class AdminController extends AbstractController
             $sortie->removeParticipant($participant);
         }
 
-        $canceled = $etatRepository->find(6);
+        $canceled = $etatRepository->find($sortie->getId());
 
         $sortie->setEtat($canceled);
         $em->persist($sortie);
