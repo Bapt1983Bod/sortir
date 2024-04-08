@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\ProfileType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use App\Services\PhotoUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,11 +18,19 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[IsGranted('IS_AUTHENTICATED')]
 class ProfilController extends AbstractController
 {
+
     #[Route('/profil', name: 'app_profil')]
-    public function myProfil(): Response
+    public function myProfil(SortieRepository$sortieRepository): Response
     {
-        return $this->render('profil/monProfil.html.twig');
+
+        $sorties = $sortieRepository->findByOrganisateur($this->getUser());
+
+        return $this->render('profil/monProfil.html.twig', [
+            'sorties'=>$sorties
+
+        ]);
     }
+
 
 
 
