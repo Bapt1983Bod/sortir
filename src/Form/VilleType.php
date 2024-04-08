@@ -16,12 +16,15 @@ class VilleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class)
+            ->add('nom', TextType::class,[
+                'attr'=>['class'=>'form-control']
+            ])
             ->add('codePostal', TextType::class,[
                 'attr'=>[
                     'min' => '01000',
                     'max' => '99999',
                     'pattern'=>'\d{5}',
+                    'class'=>'form-control'
                 ],'constraints' => [
                     new Regex([
                         'pattern' => '/^\d{5}$/',
