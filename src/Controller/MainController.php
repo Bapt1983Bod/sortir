@@ -22,7 +22,11 @@ class MainController extends AbstractController
     #[Route('/main', name: 'app_main')]
     public function index(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository, UpdateStatus $UpdateStatus): Response
     {
-        $UpdateStatus->updateStatus($entityManager, $sortieRepository, $etatRepository);
+//        $UpdateStatus->updateStatus($entityManager, $sortieRepository, $etatRepository);
+        //gourmand en requêtes, voir service UpdateStatus pour optimiser
+
+
+
         // Récupérer les paramètres de la requête
         $siteId = $request->query->get('site');
         $keyword = $request->query->get('keyword');
@@ -35,9 +39,9 @@ class MainController extends AbstractController
         $sortiePassee = $request->query->get('sortie_passee');
 
         // Commencer avec toutes les sorties
-        $sorties = $sortieRepository->findAll();
+        $sorties = $sortieRepository->findAllOptimised();
 
-        // Appliquer les filtres un par un
+       //  Appliquer les filtres un par un
         if ($siteId) {
             $sorties = $sortieRepository->findBySite($siteId);
         }
@@ -69,6 +73,8 @@ class MainController extends AbstractController
         } elseif ($participantNotRegistered) {
             $sorties = $sortieRepository->findNotRegisteredByParticipant($participant);
         }
+
+
 
         // Récupérer la liste des sites depuis la base de données
         $sites = $entityManager->getRepository(Site::class)->findAll();
