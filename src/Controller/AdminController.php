@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
+
 #[Route('/admin',name: 'app_admin')]
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
@@ -36,6 +38,7 @@ class AdminController extends AbstractController
     #[Route('/site', name: '_site')]
     public function adminSites (Request $request, SiteRepository $siteRepository, EntityManagerInterface $em): Response
     {
+
         if ($request->query->get('keyword')){
             $sites = $siteRepository ->findByKeyword($request->query->get('keyword'));
         } else {

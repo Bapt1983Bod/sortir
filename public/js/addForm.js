@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('click', function(event) {
         if (event.target && event.target.id === 'addFormBtn') {
-            console.log("bouton gris ajout")
-            event.preventDefault();
 
             const addForm = document.getElementById('addForm');
 
@@ -25,8 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     modifyBtns.forEach(function(modifyBtn) {
         modifyBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            console.log("bouton gris")
 
             // Tous les formulaires form2
             const allForms = document.querySelectorAll('[id^="addSecondForm_"]');
