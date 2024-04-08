@@ -6,18 +6,21 @@ use App\Repository\SiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SiteRepository::class)]
+#[UniqueEntity(fields: ['nom'], message: "Ce nom de site existe déja !")]
 class Site
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "Ce champ est obligatoire")]
     private ?string $nom = null;
 
 

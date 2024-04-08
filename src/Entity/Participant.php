@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -23,7 +22,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Assert\Email()]
+    #[Assert\Email(message: "Ce champ doit être un email valide")]
     private ?string $email = null;
 
     /**
@@ -39,15 +38,15 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "Ce champ est obligatoire")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "Ce champ est obligatoire")]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "Ce champ est obligatoire")]
     private ?string $telephone = null;
 
     #[ORM\Column]

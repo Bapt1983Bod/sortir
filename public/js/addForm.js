@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('click', function(event) {
         if (event.target && event.target.id === 'addFormBtn') {
-
+            console.log("bouton gris ajout")
             event.preventDefault();
 
             const addForm = document.getElementById('addForm');
@@ -26,21 +26,25 @@ document.addEventListener('DOMContentLoaded', function() {
     modifyBtns.forEach(function(modifyBtn) {
         modifyBtn.addEventListener('click', function(event) {
             event.preventDefault();
+            console.log("bouton gris")
 
-            // Masquer tous les formulaires form2
+            // Tous les formulaires form2
             const allForms = document.querySelectorAll('[id^="addSecondForm_"]');
-            allForms.forEach(function(form) {
-                form.style.display = 'none';
-            });
 
             // Construisez l'ID du div du formulaire en utilisant l'ID du bouton
             const formDivId = 'addSecondForm_' + modifyBtn.id.split('_')[1];
             const addForm = document.getElementById(formDivId);
 
-            if (addForm.style.display === 'none' || addForm.style.display === '') {
+            if(addForm.style.display === 'inline-block'){
+                // Masqer tous les formulaires
+                allForms.forEach(function(form) {
+                    form.style.display = 'none';
+                });
+            } else if (addForm.style.display === 'none' || addForm.style.display === '') {
+                allForms.forEach(function(form) {
+                    form.style.display = 'none';
+                });
                 addForm.style.display = 'inline-block';
-            } else {
-                addForm.style.display = 'none';
             }
         });
     });

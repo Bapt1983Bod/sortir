@@ -45,7 +45,7 @@
             <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsmax }}</td>
             <td>{{ sortie.lieu.nom }} ({{ sortie.lieu.ville.nom }})</td>
 
-            <td>{% if sortie.etat.libelle != "Annulée" %}<button class="btn btn-danger"><a href="{{ path('app_admin_sorties_canceled',{'id': sortie.id }) }}">Annuler la sortie</a></button>{% endif %}</td>
+            <td>{% if sortie.etat.libelle != "Annulée" and sortie.etat.libelle != "Passée"  %}<button class="btn btn-danger"><a href="{{ path('app_admin_sorties_canceled',{'id': sortie.id }) }}">Annuler la sortie</a></button>{% endif %}</td>
 
         </tr>
         {% endfor %}
