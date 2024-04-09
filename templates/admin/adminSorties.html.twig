@@ -39,9 +39,9 @@
             <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
             <td>{{ sortie.site.nom }}</td>
             <td>{{ sortie.etat.libelle }}</td>
-            <td>{{ sortie.dateHeureDebut|date('d/m/y H:i') }}</td>
+            <td>{{ sortie.dateHeureDebut|date('d/m/y H:i', 'Europe/Paris') }}</td>
             <td>{{ sortie.duree }}</td>
-            <td>{{ sortie.dateLimiteInscription|date('d/m/y') }}</td>
+            <td>{{ sortie.dateLimiteInscription|date('d/m/y', 'Europe/Paris') }}</td>
             <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsmax }}</td>
             <td>{{ sortie.lieu.nom }} ({{ sortie.lieu.ville.nom }})</td>
 
