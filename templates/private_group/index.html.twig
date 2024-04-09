@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PrivateGroupController!{% endblock %}
+
+{% block body %}
+
+
+
+    <h1>Groupes existants </h1>
+
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Description</th>
+            <th scope="col">Membres</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+            <tr>
+                <td>{{ group.nom }}</td>
+                <td>{{ group.description }}</td>
+                <td>
+                    <ul>
+                        {% for participant in group.membres %}
+                            <li>{{ participant.nom }} {{ participant.prenom }}</li>
+                        {% endfor %}
+
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+    <a class="btn btn-primary" href="{{ path('app_group_create') }}">Créer un nouveau groupe</a>
+
+
+
+
+
+{% endblock %}
