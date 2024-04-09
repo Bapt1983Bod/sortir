@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+
 use App\Form\GroupFormType;
 use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,4 +55,15 @@ class PrivateGroupController extends AbstractController
         'form' => $form->createView(),
     ]);
 }
+
+    #[Route('/group/delete/{id}', name: 'app_group_delete')]
+    public function delete(Group $group, EntityManagerInterface $em): Response
+    {
+        $em->remove($group);
+        $em->flush();
+        return $this->redirectToRoute('app_group');
+    }
+
+
+
 }
