@@ -13,13 +13,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_admin_site') }}">
-                            Admin
-                        </a>
-                    </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_main') }}">
                         Accueil
@@ -28,23 +21,29 @@
                 {% if is_granted('IS_AUTHENTICATED') %}
 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_profil') }}">
-                        Mon Profil
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_profil') }}">
+                            Mon Profil
+                        </a>
+                    </li>
 
-                 <li class="nav-item">
-                     <a class="nav-link" href="{{ path('app_group') }}">
-                         Créer un groupe privé
-                     </a>
-                 </li>
-
-
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_group') }}">
+                            Créer un groupe privé
+                        </a>
+                    </li>
 
 
                 {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin_site') }}">
+                            Admin
+                        </a>
+                    </li>
+                {% endif %}
+
+
 
 
                 {% if is_granted('IS_AUTHENTICATED') %}
