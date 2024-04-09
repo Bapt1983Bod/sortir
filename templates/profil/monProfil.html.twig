@@ -78,15 +78,18 @@
                 {% if((app.user == sortie.organisateur)) %}
 
                     <td>
-                        {% if sortie.etat.libelle != 'Crée' %}
-                            <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a>
-                            <a href="{{ path('app_sortie_suppr', {'id': sortie.id}) }}"><span class="text-danger">Supprimer</span></a>
-                        {% else %}
+
+
+                        {% if sortie.etat.libelle == 'Crée' %}
                             <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">Modifier</a>
                             <a href="{{ path('app_sortie_publish', {'id': sortie.id}) }}"><span class="text-success">Publier</span></a>
                             <a href="{{ path('app_sortie_suppr', {'id': sortie.id}) }}"><span class="text-danger">Supprimer</span></a>
 
+                        {% elseif sortie.etat.libelle == 'Ouverte' %}
+                            <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</a>
+
                         {% endif %}
+
                     </td>
 
                 {% endif %}
