@@ -9,6 +9,7 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,16 +21,19 @@ class CreationSortieType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('dateHeureDebut', null, [
+            ->add('dateHeureDebut', DateTimeType::class, [
+                'view_timezone'=> 'Europe/paris',
+                'model_timezone'=>'Europe/paris',
                 'widget' => 'single_text',
                 'attr'   => ['min' => ( new \DateTime('+1 day') )->format('Y-m-d H:i')]
             ])
             ->add('duree',null,[
                 'label' => 'Duree en minutes',
                 'attr' => ['min' => 15 , 'max' => 180],
-
             ])
-            ->add('dateLimiteInscription', null, [
+            ->add('dateLimiteInscription', DateTimeType::class, [
+                'view_timezone'=> 'Europe/paris',
+                'model_timezone'=>'Europe/paris',
                 'widget' => 'single_text',
                 'attr'   => ['min' => ( new \DateTime('now') )->format('Y-m-d'),
                 'message' =>'La date limite d\'inscription ne peux pas être avant la date de début']

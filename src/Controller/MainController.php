@@ -6,26 +6,20 @@ use App\Entity\Etat;
 use App\Entity\Site;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use App\Services\Status;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Services\UpdateStatus;
 
 
 class MainController extends AbstractController
 {
-
-
     #[Route('/main', name: 'app_main')]
-    public function index(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository, UpdateStatus $UpdateStatus): Response
+    public function index(Status $status, Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
     {
-//        $UpdateStatus->updateStatus($entityManager, $sortieRepository, $etatRepository);
-        //gourmand en requêtes, voir service UpdateStatus pour optimiser
-
-
 
         // Récupérer les paramètres de la requête
         $siteId = $request->query->get('site');
@@ -40,6 +34,8 @@ class MainController extends AbstractController
 
         // Commencer avec toutes les sorties
         $sorties = $sortieRepository->findAllOptimised();
+
+        $status -> status($sorties);
 
        //  Appliquer les filtres un par un
         if ($siteId) {
