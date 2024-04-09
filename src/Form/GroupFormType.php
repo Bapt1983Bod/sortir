@@ -17,7 +17,9 @@ class GroupFormType extends AbstractType
             ->add('description')
             ->add('membres', EntityType::class, [
                 'class' => Participant::class,
-                'choice_label' => 'nom',
+                'choice_label' => function (Participant $participant) {
+                    return $participant->getNom() . ' ' . $participant->getPrenom();
+                },
                 'multiple' => true,
                 'expanded' => true, // Afficher les choix comme une liste de cases à cocher
             ]);

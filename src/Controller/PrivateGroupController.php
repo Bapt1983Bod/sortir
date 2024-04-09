@@ -47,7 +47,7 @@ class PrivateGroupController extends AbstractController
         $entityManager->flush();
 
         // Redirigez l'utilisateur vers une autre page, par exemple la page d'accueil
-        return $this->redirectToRoute('app_main');
+        return $this->redirectToRoute('app_group');
     }
 
     return $this->render('private_group/create.html.twig', [
