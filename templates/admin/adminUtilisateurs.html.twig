@@ -5,7 +5,7 @@
     <h2>Gestion des utilisateurs</h2>
 
 
-    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateurs/update',{'id':0}) }}">Ajouter un utilisateur</a></button>
+    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateur_add')}}">Ajouter un utilisateur</a></button>
     <button class="btn btn-secondary"><a href="{{ path('app_import_csv') }}">Import Utilisateurs Via Fichier CSV</a></button>
     <br><br>
 
@@ -30,17 +30,17 @@
 
             <td>
                 {% if user.administrateur == 1 %}
-                    <button class="btn btn-warning"><a href="{{ path('app_admin_utilisateurs/setRole',{'id': user.id}) }}">Passer User</a></button>
+                    <button class="btn btn-warning"><a href="{{ path('app_admin_utilisateurs_setRole',{'id': user.id}) }}">Passer User</a></button>
                 {% else %}
-                    <button class="btn btn-success"><a href="{{ path('app_admin_utilisateurs/setRole',{'id': user.id}) }}">Passer Admin</a></button>
+                    <button class="btn btn-success"><a href="{{ path('app_admin_utilisateurs_setRole',{'id': user.id}) }}">Passer Admin</a></button>
                 {% endif %}
                 {% if user.actif == 1 %}
-                    <button class="btn btn-warning"><a href="{{ path('app_admin_utilisteurs/actif',{'id': user.id}) }}">Passer Inactif</a></button>
+                    <button class="btn btn-warning"><a href="{{ path('app_admin_utilisteurs_actif',{'id': user.id}) }}">Passer Inactif</a></button>
                 {% else %}
-                    <button class="btn btn-success"><a href="{{ path('app_admin_utilisteurs/actif',{'id': user.id}) }}">Passer Actif</a></button>
+                    <button class="btn btn-success"><a href="{{ path('app_admin_utilisteurs_actif',{'id': user.id}) }}">Passer Actif</a></button>
                 {% endif %}
-                    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateurs/update',{'id' : user.id }) }}">Modifier</a></button>
-                    <button class="btn btn-danger"><a href="{{ path('app_admin_utilisateurs/delete',{'id' : user.id }) }}">Supprimer</a></button>
+                    <button class="btn btn-secondary"><a href="{{ path('app_admin_utilisateurs_update',{'id' : user.id }) }}">Modifier</a></button>
+                    <button class="btn btn-danger"><a href="{{ path('app_admin_utilisateurs_delete',{'id' : user.id }) }}">Supprimer</a></button>
             </td>
         </tr>
         {% endfor %}

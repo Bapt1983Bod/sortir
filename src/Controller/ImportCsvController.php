@@ -88,7 +88,7 @@ class ImportCsvController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Importation CSV réussie!');
-                return $this->redirectToRoute('app_profil');
+                return $this->redirectToRoute('app_admin_utilisateurs');
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'Une erreur est survenue lors de l\'importation: ' . $exception->getMessage());
             }

@@ -17,6 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ProfileType extends AbstractType
 {
@@ -24,9 +25,13 @@ class ProfileType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class,[
-
-                    'attr' => ['class'=> 'form-control']
-
+                    'attr' => ['class'=> 'form-control'],
+                    'constraints' => [
+                        new Regex([
+                            'pattern' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                            'message' => 'L\'email n\'est pas valide.'
+                        ])
+                    ]
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'mapped' => false,
@@ -40,7 +45,7 @@ class ProfileType extends AbstractType
                     'constraints' => [
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
+                            'minMessage' => 'Le mot de passe doit contenir au minimum {{ limit }} caractères',
                             'max' => 4096,
                         ]),
                     ],

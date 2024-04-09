@@ -7,6 +7,7 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Form\ProfileType;
+use App\Form\RegistrationFormType;
 use App\Form\SiteType;
 use App\Form\VilleType;
 use App\Repository\EtatRepository;
@@ -14,6 +15,7 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Security\AppAuthenticator;
 use App\Services\AdminUtilisateurService;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
@@ -22,6 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -111,7 +114,7 @@ class AdminController extends AbstractController
     }
 
     // Suppression d'un utilisateur
-    #[Route('/utilisateurs/delete/{id}', name: '_utilisateurs/delete')]
+    #[Route('/utilisateurs/delete/{id}', name: '_utilisateurs_delete')]
     public function deleteUtilisateur(Participant $participant, EntityManagerInterface $em, PhotoUploader $photoUploader) : Response
     {
         // suppression de la photo du participant
@@ -125,16 +128,43 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin_utilisateurs');
     }
 
-    // màj des données utilisateurs
-    #[Route('/utilisateurs/update/{id}', name: '_utilisateurs/update')]
-    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword) : Response
+    // Ajout manuel d'un utilisateur
+    #[Route('/utilisateurs/add', name: '_utilisateur_add')]
+    public function addUtilisateur(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager)
     {
-        if (!$participant){
-            $participant = new Participant();
+        $user = new Participant();
+        $form = $this->createForm(ProfileType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+           $this->addFlash("ajout effectué !");
+
+            return $this->redirectToRoute("app_admin_utilisateurs");
         }
 
+        return $this->render('admin/adminUtilisateursAdd.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    // màj des données utilisateurs
+    #[Route('/utilisateurs/update/{id}', name: '_utilisateurs_update')]
+    public function updateUtilisateur(?Participant $participant, EntityManagerInterface $em, Request $request , PhotoUploader $photoUploader, HashPassword $hashPassword) : Response
+    {
         $formUser = $this->createForm(ProfileType::class, $participant);
         $formUser->handleRequest($request);
+
 
         if ($formUser->isSubmitted() and $formUser->isValid()){
 
@@ -147,8 +177,6 @@ class AdminController extends AbstractController
                 $filename = $photoUploader->photoUpload($participant, $photo);
                 $participant->setPhoto($filename);
             }
-
-
 
             // Vérifie si un nouveau mot de passe a été fourni
             if ($plainPassword) {
@@ -172,7 +200,7 @@ class AdminController extends AbstractController
     }
 
     // Modification du role de l'utilisateur
-    #[Route('/utilisateurs/setRole/{id}',name: "_utilisateurs/setRole")]
+    #[Route('/utilisateurs/setRole/{id}',name: "_utilisateurs_setRole")]
     public function setRole(Participant $participant, AdminUtilisateurService $adminUtilisateurService ) : Response
     {
         $adminUtilisateurService->setRole($participant);
@@ -183,7 +211,7 @@ class AdminController extends AbstractController
     }
 
     // Modification du statut utilisateur (Actif/Inactif)
-    #[Route('/utilisateurs/actif/{id}', name: '_utilisteurs/actif')]
+    #[Route('/utilisateurs/actif/{id}', name: '_utilisteurs_actif')]
     public function setActif(Participant $participant, AdminUtilisateurService $adminUtilisateurService): Response
     {
         $adminUtilisateurService->setActif($participant);

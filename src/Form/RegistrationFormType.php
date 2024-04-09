@@ -22,17 +22,24 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom',TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('telephone', TextType::class)
-            ->add('email', EmailType::class)
+            ->add('nom',TextType::class,[
+                'attr' => ['class'=> 'form-control']
+            ])
+            ->add('prenom', TextType::class,[
+                'attr' => ['class'=> 'form-control']
+            ])
+            ->add('telephone', TextType::class,[
+                'attr' => ['class'=> 'form-control']
+            ])
+            ->add('email', EmailType::class,[
+                'attr' => ['class'=> 'form-control']
+            ])
             ->add('plainPassword', RepeatedType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'type' => PasswordType::class,
                 'options' => [
-                    'attr' => ['autocomplete' => 'new-password'],
+                    'attr' => ['autocomplete' => 'new-password',
+                        'class'=> 'form-control'],
                 ],
                 'first_options' => [
                     'constraints' => [
@@ -41,13 +48,11 @@ class RegistrationFormType extends AbstractType
                         ]),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
+                            'minMessage' => 'Le mot de passe doit contenir au minimum {{ limit }} caractères',
                             'max' => 4096,
                         ]),
                     ],
                     'label' => 'Mot de passe',
-                    'help' => 'Le mot de passe doit contenir au minimum 8 caractères',
                 ],
                 'second_options' => [
                     'label' => "Confirmez le mot de passe"
@@ -57,6 +62,7 @@ class RegistrationFormType extends AbstractType
             ->add('site', EntityType::class, [
                 'class'=> Site::class,
                 'choice_label' => 'nom',
+                'attr' => ['class'=> 'form-control']
             ])
         ;
     }
