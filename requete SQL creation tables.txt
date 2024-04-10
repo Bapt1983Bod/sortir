@@ -1,0 +1,238 @@
+create table etat
+(
+    id      int auto_increment
+        primary key,
+    libelle varchar(255) not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create table `group`
+(
+    id          int auto_increment
+        primary key,
+    nom         varchar(50) not null,
+    description longtext    null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create table group_participant
+(
+    group_id       int not null,
+    participant_id int not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create index IDX_F22774D09D1C3019
+    on group_participant (participant_id);
+
+create index IDX_F22774D0FE54D947
+    on group_participant (group_id);
+
+alter table group_participant
+    add primary key (group_id, participant_id);
+
+alter table group_participant
+    add constraint FK_F22774D0FE54D947
+        foreign key (group_id) references `group` (id)
+            on delete cascade;
+
+create table lieu
+(
+    id        int auto_increment
+        primary key,
+    nom       varchar(255) not null,
+    rue       varchar(255) not null,
+    latitude  double       not null,
+    longitude double       not null,
+    ville_id  int          not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create index IDX_2F577D59A73F0036
+    on lieu (ville_id);
+
+create table messenger_messages
+(
+    id           bigint auto_increment
+        primary key,
+    body         longtext     not null,
+    headers      longtext     not null,
+    queue_name   varchar(190) not null,
+    created_at   datetime     not null comment '(DC2Type:datetime_immutable)',
+    available_at datetime     not null comment '(DC2Type:datetime_immutable)',
+    delivered_at datetime     null comment '(DC2Type:datetime_immutable)'
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create index IDX_75EA56E016BA31DB
+    on messenger_messages (delivered_at);
+
+create index IDX_75EA56E0E3BD61CE
+    on messenger_messages (available_at);
+
+create index IDX_75EA56E0FB7336F0
+    on messenger_messages (queue_name);
+
+create table participant
+(
+    id             int auto_increment
+        primary key,
+    site_id        int          null,
+    email          varchar(180) not null,
+    roles          json         not null,
+    password       varchar(255) not null,
+    nom            varchar(255) not null,
+    prenom         varchar(255) not null,
+    telephone      varchar(50)  not null,
+    administrateur tinyint(1)   not null,
+    actif          tinyint(1)   not null,
+    photo          varchar(255) null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+alter table group_participant
+    add constraint FK_F22774D09D1C3019
+        foreign key (participant_id) references participant (id)
+            on delete cascade;
+
+create index IDX_D79F6B11F6BD1646
+    on participant (site_id);
+
+alter table participant
+    add constraint UNIQ_IDENTIFIER_EMAIL
+        unique (email);
+
+create table participant_sortie
+(
+    participant_id int not null,
+    sortie_id      int not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create index IDX_8E436D739D1C3019
+    on participant_sortie (participant_id);
+
+create index IDX_8E436D73CC72D953
+    on participant_sortie (sortie_id);
+
+alter table participant_sortie
+    add primary key (participant_id, sortie_id);
+
+alter table participant_sortie
+    add constraint FK_8E436D739D1C3019
+        foreign key (participant_id) references participant (id)
+            on delete cascade;
+
+create table reset_password_request
+(
+    id           int auto_increment
+        primary key,
+    user_id      int          not null,
+    selector     varchar(20)  not null,
+    hashed_token varchar(100) not null,
+    requested_at datetime     not null comment '(DC2Type:datetime_immutable)',
+    expires_at   datetime     not null comment '(DC2Type:datetime_immutable)'
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+create index IDX_7CE748AA76ED395
+    on reset_password_request (user_id);
+
+alter table reset_password_request
+    add constraint FK_7CE748AA76ED395
+        foreign key (user_id) references participant (id);
+
+create table site
+(
+    id  int auto_increment
+        primary key,
+    nom varchar(255) not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+alter table participant
+    add constraint FK_D79F6B11F6BD1646
+        foreign key (site_id) references site (id);
+
+alter table site
+    add constraint UNIQ_694309E46C6E55B5
+        unique (nom);
+
+create table sortie
+(
+    id                      int auto_increment
+        primary key,
+    nom                     varchar(255) not null,
+    date_heure_debut        datetime     not null,
+    duree                   int          not null,
+    date_limite_inscription date         not null,
+    nb_inscriptionsmax      int          not null,
+    infos_sortie            longtext     null,
+    site_id                 int          not null,
+    lieu_id                 int          not null,
+    etat_id                 int          not null,
+    organisateur_id         int          not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+alter table participant_sortie
+    add constraint FK_8E436D73CC72D953
+        foreign key (sortie_id) references sortie (id)
+            on delete cascade;
+
+create index IDX_3C3FD3F26AB213CC
+    on sortie (lieu_id);
+
+create index IDX_3C3FD3F2D5E86FF
+    on sortie (etat_id);
+
+create index IDX_3C3FD3F2D936B2FA
+    on sortie (organisateur_id);
+
+create index IDX_3C3FD3F2F6BD1646
+    on sortie (site_id);
+
+alter table sortie
+    add constraint FK_3C3FD3F26AB213CC
+        foreign key (lieu_id) references lieu (id);
+
+alter table sortie
+    add constraint FK_3C3FD3F2D5E86FF
+        foreign key (etat_id) references etat (id);
+
+alter table sortie
+    add constraint FK_3C3FD3F2D936B2FA
+        foreign key (organisateur_id) references participant (id);
+
+alter table sortie
+    add constraint FK_3C3FD3F2F6BD1646
+        foreign key (site_id) references site (id);
+
+create table ville
+(
+    id          int auto_increment
+        primary key,
+    nom         varchar(255) not null,
+    code_postal int          not null
+)
+    engine = InnoDB
+    collate = utf8mb4_unicode_ci;
+
+alter table lieu
+    add constraint FK_2F577D59A73F0036
+        foreign key (ville_id) references ville (id);
+
+alter table ville
+    add constraint UNIQ_43C3D9C36C6E55B5
+        unique (nom);
+
