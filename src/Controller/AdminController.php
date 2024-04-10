@@ -125,7 +125,7 @@ class AdminController extends AbstractController
             );
             $entityManager->persist($user);
             $entityManager->flush();
-            $this->addFlash("ajout effectué !");
+            $this->addFlash("success", "Ajout effectué !");
             return $this->redirectToRoute("app_admin_utilisateurs");
         }
         return $this->render('admin/adminUtilisateursAdd.html.twig', [
