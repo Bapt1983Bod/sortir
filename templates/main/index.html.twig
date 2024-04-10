@@ -10,8 +10,8 @@
     <div class="body">
         {% if(user) %}
         <div>
-            Participant : {{ user.prenom }} {{ user.nom|upper}}
-        </div>
+            Participant connecté : {{ user.prenom }} {{ user.nom|upper}}
+        </div><br>
         {% endif %}
         <div class="container">
             <form action="{{ path('app_main') }}" method="GET" class="filter-form">
@@ -56,11 +56,13 @@
                         <input type="checkbox" name="sortie_passee" value="1"> Sorties passées
                     </label>
                 </div>
+                <br>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
                 <button type="button" class="btn btn-primary">
                     <a class="nav-link" href="{{ path('app_creation') }}">Ajouter Une Sortie</a>
                 </button>
             </form>
+            <br>
 
 
             <table class="table">
@@ -88,29 +90,25 @@
                         </td>
                         <td>{{ sortie.etat.libelle }}</td>
                         <td>{{ sortie.organisateur.nom }} {{ sortie.organisateur.prenom }}</td>
-                        {% if(app.user) %}
+                        <td>{% if(app.user) %}
                             {% if(app.user != sortie.organisateur) and (sortie.etat.libelle == 'Ouverte') %}
                                 {% if(not sortie.participants.contains(user)) and (sortie.nbInscriptionsmax > sortie.participants|length) %}
-                                    <td><a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a></td>
+                                    <a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">{{ "S'inscrire" }}</a>
                                 {% endif %}
                                 {% if (sortie.participants.contains(user)) %}
-                                    <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
-                                    {% else %}
-                                    <td></td>
+                                    <a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a>
                                 {% endif %}
                             {% elseif app.user != sortie.organisateur and sortie.etat.libelle == 'Clôturée' %}
                                 <td class="table-light"></td>
                             {% endif %}
                             {% else %}
-                            <td>Inscription fermée</td>
+                            Inscription fermée
                         {% endif %}
                         {% if((app.user == sortie.organisateur)) %}
-                            <td>
                                 {% if(sortie.etat.libelle == 'Ouverte') %}
                                     <a href="{{ path('app_sortie_stop', {'id': sortie.id}) }}"><span class="text-danger">Annuler</span></a>
                                 {% endif %}
-                            </td>
-                        {% endif %}
+                        {% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
