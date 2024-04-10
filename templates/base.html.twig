@@ -9,14 +9,11 @@
                     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
                     rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
                     crossorigin="anonymous">
-
         {% endblock %}
-
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
             <script src="{{ asset('js/addForm.js')}}"></script>
         {% endblock %}
-
     </head>
     <body class="d-flex flex-column">
     {# entête du site #}
@@ -44,11 +41,11 @@
             {% block body %}{% endblock %}
         </div>
     </main>
-    {# pied-de-page du site #}
-{#    <footer>#}
-{#        <div class="container">#}
-{#            &copy; Sortir.com {{"now"|date("Y") }}#}
-{#        </div>#}
-{#    </footer>#}
+{#     pied-de-page du site#}
+    <footer class="footer fixed-bottom bg-light">
+        <div class="container">
+            &copy; Sortir.com {{"now"|date("Y") }}
+        </div>
+    </footer>
     </body>
 </html>

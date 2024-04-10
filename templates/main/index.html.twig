@@ -95,11 +95,11 @@
                                 {% if (sortie.participants.contains(user)) %}
                                     <td><a href="{{ path('app_sortie_annulation', {'id': sortie.id}) }}">{{ "Se désinscrire" }}</a></td>
                                     {% else %}
-                                    <td> </td>
+                                    <td class="table-light"></td>
                                 {% endif %}
                             {% endif %}
                             {% else %}
-                            <td>Inscription fermer</td>
+                            <td>Inscription fermée</td>
                         {% endif %}
                         {% if((app.user == sortie.organisateur)) %}
                             <td>
