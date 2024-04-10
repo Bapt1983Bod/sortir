@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/index.html.twig' %}
 
 {% block title %}Import CSV{% endblock %}
 
-{% block body %}
-    <h1>Importation CSV</h1>
+{% block div %}
+    <h1>Importation utilisateurs via fichier CSV</h1><br>
     {{ form_start(form) }}
-    {{ form_row(form.csv_file) }}
+    {{ form_row(form.csv_file) }} <br>
     <button type="submit" class="btn btn-primary">Importer</button>
     {{ form_end(form) }}
 {% endblock %}
