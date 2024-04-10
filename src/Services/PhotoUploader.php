@@ -7,7 +7,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class PhotoUploader
 {
-
     private SluggerInterface $slugger;
 
     /**
@@ -20,10 +19,8 @@ class PhotoUploader
     public function photoUpload($user, $photo) : string
     {
         $this->deletePhoto($user);
-
         $fileName = $this->slugger->slug($user->getNom().$user->getPrenom()).'.'.uniqid().'.'.$photo->guessExtension();
         $photo->move('images/profil', $fileName);
-
         return $fileName;
     }
 
@@ -33,7 +30,4 @@ class PhotoUploader
             unlink('images/profil/'.$user->getPhoto());
         }
     }
-
-
-
 }

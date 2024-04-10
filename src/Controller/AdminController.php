@@ -7,7 +7,6 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Form\ProfileType;
-use App\Form\RegistrationFormType;
 use App\Form\SiteType;
 use App\Form\VilleType;
 use App\Repository\EtatRepository;
@@ -15,7 +14,6 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
-use App\Security\AppAuthenticator;
 use App\Services\AdminUtilisateurService;
 use App\Services\HashPassword;
 use App\Services\PhotoUploader;
@@ -28,8 +26,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
-
 #[Route('/admin',name: 'app_admin')]
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
@@ -41,7 +37,6 @@ class AdminController extends AbstractController
     #[Route('/site', name: '_site')]
     public function adminSites (Request $request, SiteRepository $siteRepository, EntityManagerInterface $em): Response
     {
-
         if ($request->query->get('keyword')){
             $sites = $siteRepository ->findByKeyword($request->query->get('keyword'));
         } else {
@@ -49,35 +44,26 @@ class AdminController extends AbstractController
         }
 
         // Ajout d'un site
+            $newSite = new Site();
+            $form = $this->createForm(SiteType::class,$newSite);
+            $form->handleRequest($request);
 
-        $newSite = new Site();
-        $form = $this->createForm(SiteType::class,$newSite);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() and  $form->isValid()){
-            $em->persist($newSite);
-            $em->flush();
-
-            $this->addFlash('success',"La ville ".$newSite->getNom()." a été ajoutée !");
-
-            return $this->redirectToRoute('app_admin_site');
-        }
+            if($form->isSubmitted() and  $form->isValid()){
+                $em->persist($newSite);
+                $em->flush();
+                $this->addFlash('success',"La ville ".$newSite->getNom()." a été ajoutée !");
+                return $this->redirectToRoute('app_admin_site');
+            }
 
         // Modification du site
-
             if ($request->query->get("name")){
                 $site = $siteRepository->find($request->query->get('id'));
                 $site->setNom($request->query->get("name"));
-
                 $em->persist($site);
                 $em->flush();
-
                 $this->addFlash('success',"La ville ".$site->getNom()." a été modifiée !");
-
                 return $this->redirectToRoute('app_admin_site');
             }
-//
-
         return $this->render('admin/adminSites.html.twig', [
             'sites' => $sites,
             'form' => $form->createView()
@@ -91,15 +77,12 @@ class AdminController extends AbstractController
         try{
             $em->remove($site);
             $em->flush();
-
             $this->addFlash('success', 'Suppression de '.$site->getNom().' réalisée !');
         }  catch (\Exception $exception) {
             $this->addFlash("danger", "Impossible de supprimer le site ".$site->getNom()." car il est lié à d'autres éléments (Participants).");
         }
-
         return $this->redirectToRoute('app_admin_site');
     }
-
 
 // ADMINISTRATION DES UTILISATEURS
 
@@ -107,7 +90,6 @@ class AdminController extends AbstractController
     public function adminUtilisateurs (ParticipantRepository $participantRepository) : Response
     {
         $Participants = $participantRepository->findAll();
-
         return $this->render('admin/adminUtilisateurs.html.twig',[
             "users"=>$Participants
         ]);
@@ -119,12 +101,9 @@ class AdminController extends AbstractController
     {
         // suppression de la photo du participant
         $photoUploader->deletePhoto($participant);
-
         $em->remove($participant);
         $em->flush();
-
         $this->addFlash('success', "L'utilisateur ".$participant->getPrenom()." ".$participant->getNom()." a été supprimé !");
-
         return $this->redirectToRoute('app_admin_utilisateurs');
     }
 
@@ -144,15 +123,11 @@ class AdminController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-
             $entityManager->persist($user);
             $entityManager->flush();
-
-           $this->addFlash("ajout effectué !");
-
+            $this->addFlash("ajout effectué !");
             return $this->redirectToRoute("app_admin_utilisateurs");
         }
-
         return $this->render('admin/adminUtilisateursAdd.html.twig', [
             'form' => $form,
         ]);
@@ -165,9 +140,7 @@ class AdminController extends AbstractController
         $formUser = $this->createForm(ProfileType::class, $participant);
         $formUser->handleRequest($request);
 
-
         if ($formUser->isSubmitted() and $formUser->isValid()){
-
             // Récupération la valeur directe du champ plainPassword du formulaire
             $plainPassword = $formUser->get('plainPassword')->getData();
 
@@ -184,15 +157,11 @@ class AdminController extends AbstractController
                $password = $hashPassword->hashPassword($plainPassword);
                $participant->setPassword($password);
             }
-
             $em->persist($participant);
             $em->flush();
-
             $this->addFlash('success', 'Utilisateur ' . $participant->getPrenom() . " " . $participant->getNom() . " ajouté ou modifié !");
-
             return $this->redirectToRoute('app_admin_utilisateurs');
         }
-
         return $this->render('admin/adminUtilisateursUpdate.html.twig', [
             'form'=>$formUser->createView(),
             'user'=>$participant
@@ -204,9 +173,7 @@ class AdminController extends AbstractController
     public function setRole(Participant $participant, AdminUtilisateurService $adminUtilisateurService ) : Response
     {
         $adminUtilisateurService->setRole($participant);
-
         $this->addFlash('success', "Le role de l'utilisateur ".$participant->getPrenom()." ".$participant->getNom()." a été mis à jour");
-
         return $this->redirectToRoute("app_admin_utilisateurs");
     }
 
@@ -215,9 +182,7 @@ class AdminController extends AbstractController
     public function setActif(Participant $participant, AdminUtilisateurService $adminUtilisateurService): Response
     {
         $adminUtilisateurService->setActif($participant);
-
         $this->addFlash('success', "Le statut de l'utilisateur ".$participant->getPrenom()." ".$participant->getNom()." a été mis à jour");
-
         return $this->redirectToRoute("app_admin_utilisateurs");
     }
 
@@ -226,13 +191,11 @@ class AdminController extends AbstractController
     #[Route('/villes', name: '_villes')]
     public function adminVille(Request $request, VilleRepository $villeRepository, EntityManagerInterface $em) : Response
     {
-
         if ($request->query->get('keyword')){
             $villes = $villeRepository ->findByKeyword($request->query->get('keyword'));
         } else {
             $villes = $villeRepository->findAll();
         }
-
         $newVille = new Ville();
         $form = $this->createForm(VilleType::class,$newVille);
         $form->handleRequest($request);
@@ -240,11 +203,9 @@ class AdminController extends AbstractController
         if($form->isSubmitted() and  $form->isValid()){
             $em->persist($newVille);
             $em->flush();
-
             $this->addFlash('success', 'La ville a été ajoutée !');
             return $this->redirectToRoute('app_admin_villes');
         }
-
         return $this->render('admin/adminVilles.html.twig', [
             'villes'=>$villes,
             'form'=>$form->createView(),
@@ -258,16 +219,13 @@ class AdminController extends AbstractController
         try {
             $em->remove($ville);
             $em->flush();
-
             $this->addFlash("success", "La ville ".$ville->getNom()." a été supprimée !");
         } catch (\Exception $exception) {
             $this->addFlash("danger", "Une erreur s'est produite lors de la suppression de la ville ".$ville->getNom());
             $this->addFlash("danger", "Impossible de supprimer la ville ".$ville->getNom()." car elle est liée à d'autres éléments (Lieux).");
         }
-
         return $this->redirectToRoute("app_admin_villes");
     }
-
 
 // ADMINISTRATION DES SORTIES
 
@@ -280,7 +238,6 @@ class AdminController extends AbstractController
         } else {
             $sorties = $sortieRepository->findAllOptimised();
         }
-
         return $this->render('admin/adminSorties.html.twig', [
             'sorties'=>$sorties,
             ]);
@@ -292,13 +249,10 @@ class AdminController extends AbstractController
         foreach ($sortie->getParticipants() as $participant)  {
             $sortie->removeParticipant($participant);
         }
-
         $canceled = $etatRepository->find($sortie->getId());
-
         $sortie->setEtat($canceled);
         $em->persist($sortie);
         $em->flush();
-
         return $this->redirectToRoute("app_admin_sorties");
     }
 }

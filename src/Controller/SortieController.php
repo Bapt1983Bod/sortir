@@ -14,13 +14,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SortieController extends AbstractController
 {
-
     #[Route('/sortie', name: 'app_creation')]
     public function creation(Request $request, EntityManagerInterface $em ): Response
     {
         $sortie = new Sortie();
         $form = $this->createForm(CreationSortieType::class, $sortie);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid())
         {
             $sortie->setOrganisateur($this->getUser());
@@ -30,7 +30,6 @@ class SortieController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('app_sortie_detail', ['id' => $sortie->getId()]);
         }
-
         return $this->render('sortie/index.html.twig', [
             'form' => $form
         ]);
@@ -43,7 +42,6 @@ class SortieController extends AbstractController
             && $sortie->getNbInscriptionsmax() > $sortie->getParticipants()->count()
             && !$sortie->getParticipants()->contains($this->getUser()))
         {
-
             $participant = $this->getUser();
             $sortie->getParticipants()->add($participant);
             $em->persist($sortie);
@@ -54,7 +52,6 @@ class SortieController extends AbstractController
             $this->addFlash('info', 'Inscription effectuée');
             return $this->redirectToRoute('app_main');
         }
-
         $this->addFlash('info', 'Inscription impossible - un problème est survenu');
         return $this->redirectToRoute('app_main');
     }

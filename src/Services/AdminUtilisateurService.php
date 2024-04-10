@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AdminUtilisateurService
 {
-
     private $entityManager;
     private $participantRepository;
 
@@ -29,7 +28,6 @@ class AdminUtilisateurService
         } else {
             $participant->setActif(true);
         }
-
         $this->entityManager->persist($participant);
         $this->entityManager->flush();
     }
@@ -43,7 +41,6 @@ class AdminUtilisateurService
             $participant->setAdministrateur(true);
             $participant->setRoles(["ROLE_ADMIN"]);
         }
-
         $this->entityManager->persist($participant);
         $this->entityManager->flush();
     }

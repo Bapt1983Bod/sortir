@@ -25,35 +25,6 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-
-
-
-
-
-    //    /**
-    //     * @return Sortie[] Returns an array of Sortie objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Sortie
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
     public function findBySite(int $siteId): array
     {
         return $this->createQueryBuilder('s')
@@ -103,7 +74,6 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
 
     public function findNotRegisteredByParticipant(Participant $participant): array
     {
@@ -158,10 +128,6 @@ class SortieRepository extends ServiceEntityRepository
             ->where('s.etat IN (:etatIds)')
             ->setParameter('etatIds', [2, 3, 4, 5, 6]);  //enlever les sorties avec etat 1 et 7
 
-
-
         return $qb->getQuery()->getResult();
-
-
     }
 }
