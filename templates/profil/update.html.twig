@@ -8,13 +8,8 @@
 {% endblock %}
 
 {% block body %}
-
-
-<div class="example-wrapper">
-
+    <div class="example-wrapper">
     <h2>Mon profil</h2>
-
-
     {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
     <div class="col-md-6">
         {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
@@ -28,39 +23,23 @@
     <div class="col-md-6">
         {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
     </div>
-
-    <div class="col-md-6">
+        <div class="col-md-6">
         {{ form_row(form.plainPassword, {'attr': {'class': 'form-control'}, 'label': 'Password'}) }}
     </div>
-
-
-
-
-    <div class="col-md-6">
+        <div class="col-md-6">
         {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
-    </div>
+        </div>
 
-
-
-    {% if app.user.photo %}
+        {% if app.user.photo %}
         <img src="{{ asset('images/profil/'~ app.user.photo) }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
     {% else %}
         <img src="{{ asset('images/profil/defaultProfil.png') }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
     {% endif %}
-
-
-
-
         {{ form_row( form.image_file) }}
     <div class="btn-group">
         <button class="btn btn-secondary"><a href="{{ path('app_profil') }}">Retour</a></button>
         <button type="submit" class="btn btn-primary">Modifier</button>
     {{ form_end(form) }}
     </div>
-
-
-
-
-
 </div>
 {% endblock %}

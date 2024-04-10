@@ -41,26 +41,21 @@ class MainController extends AbstractController
         if ($siteId) {
             $sorties = $sortieRepository->findBySite($siteId);
         }
-
         if ($sortiePassee) {
             $etatPassee = $entityManager->getRepository(Etat::class)->find(5); // ID de l'état "Passée"
             $sorties = $sortieRepository->findBy(['etat' => $etatPassee]);
         }
-
         if ($keyword) {
             $sorties = $sortieRepository->findByKeyword($keyword);
         }
-
         if ($startDate && $endDate) {
             $startDateTime = new DateTime($startDate);
             $endDateTime = new DateTime($endDate);
             $sorties = $sortieRepository->findByDateRange($startDateTime, $endDateTime);
         }
-
         if ($organisateur) {
             $sorties = $sortieRepository->findByOrganisateur($this->getUser());
         }
-
         // Filtrer les sorties selon les cas cochés
         if ($participantRegistered && $participantNotRegistered) {
             $sorties = $sortieRepository->findRegisteredAndNotRegisteredByParticipant($participant);
@@ -69,12 +64,8 @@ class MainController extends AbstractController
         } elseif ($participantNotRegistered) {
             $sorties = $sortieRepository->findNotRegisteredByParticipant($participant);
         }
-
-
-
         // Récupérer la liste des sites depuis la base de données
         $sites = $entityManager->getRepository(Site::class)->findAll();
-
         // Passer les sorties filtrées et la liste des sites à la vue
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,

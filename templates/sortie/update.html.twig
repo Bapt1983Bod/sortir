@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-
     {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.dateHeureDebut)}}
@@ -15,5 +13,4 @@
     {{ form_row(form.submit) }}
     <button><a href="{{ path('app_sortie_detail', {'id': sortie.id }) }}">Retour</a></button>
     {{ form_end(form) }}
-
 {% endblock %}

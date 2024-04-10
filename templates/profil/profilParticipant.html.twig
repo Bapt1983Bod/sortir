@@ -3,22 +3,16 @@
 
 {% block title %}Sortir.com{% endblock %}
 
-
-
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/profil.css') }}">
 {% endblock %}
 
-
 {% block body %}
-
 
 <div class="profil">
     <h1>Profil de {{ participant.prenom }} {{ participant.nom }} !</h1>
-
     <img src="{{ asset('images/profil/'~ participant.photo ) }}" alt="Photo de profil">
-
     <ul>
         <li>Prenom : {{ participant.prenom }}</li>
         <li>Nom : {{ participant.nom }}</li>
@@ -26,9 +20,7 @@
         <li>Email : {{ participant.email }}</li>
         <li>Ville de rattachement : {{ participant.site.nom }}</li>
     </ul>
-    
     <button class="btn btn-secondary"><a href="{{ path('app_main') }}">Retour</a></button>
-
 </div>
 {% endblock %}
 

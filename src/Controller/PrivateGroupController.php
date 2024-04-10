@@ -14,36 +14,23 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PrivateGroupController extends AbstractController
 {
-
-
-
     #[Route('/group', name: 'app_group')]
     public function index(GroupRepository $groupRepository): Response
     {
-
         $groups = $groupRepository->findAll();
-
         return $this->render('private_group/index.html.twig', [
             'groups' => $groups,
         ]);
     }
-
-
-
-
 
 #[Route('/group/create', name: 'app_group_create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
 {
     $group = new Group();
     $form = $this->createForm(GroupFormType::class, $group);
-
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-
-
-
         $entityManager->persist($group);
         $entityManager->flush();
 
@@ -54,16 +41,11 @@ class PrivateGroupController extends AbstractController
     return $this->render('private_group/create.html.twig', [
         'form' => $form->createView(),
     ]);
-}
-
-    #[Route('/group/delete/{id}', name: 'app_group_delete')]
+}#[Route('/group/delete/{id}', name: 'app_group_delete')]
     public function delete(Group $group, EntityManagerInterface $em): Response
     {
         $em->remove($group);
         $em->flush();
         return $this->redirectToRoute('app_group');
     }
-
-
-
 }

@@ -16,11 +16,8 @@
         {{ form_row(form.email) }}
         {{ form_row(form.plainPassword, {label: 'Password'}) }}
         {{ form_row( form.site ) }}
-
-
             <img src="{{ asset('images/profil/defaultProfil.png') }}" alt="Photo de profil">
         {{ form_row( form.image_file ) }}
-
         <button type="submit" class="btn btn-danger">Enregistrer</button><br>
     {{ form_end(form) }}
 

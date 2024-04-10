@@ -17,31 +17,24 @@ use App\Services\HashPassword;
 
 class ImportCsvController extends AbstractController
 {
-
     private $hashPasswordService;
-
     public function __construct(HashPassword $hashPasswordService)
     {
         $this->hashPasswordService = $hashPasswordService;
     }
 
-
     #[Route('/import/csv', name: 'app_import_csv')]
     public function importCsv(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepo): Response
     {
         $form = $this->createForm(ImportCsvType::class);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $csvFile = $form->get('csv_file')->getData();
 
             try {
                 $file = fopen($csvFile->getPathname(), 'r'); //lire le contenu ligne par ligne
-
                 fgetcsv($file); // Ignorer la première ligne
-
 
                 while (($line = fgetcsv($file)) !== FALSE) {
                     foreach($line as $import) {
@@ -51,37 +44,23 @@ class ImportCsvController extends AbstractController
                         $participant->setNom($data[0]);
                         $participant->setPrenom($data[1]);
                         $participant->setTelephone($data[2]);
-
-
-
                         $password = $data[3];
                         // Service pour hacher le mot de passe
                         $hashedPassword = $this->hashPasswordService->hashPassword($password);
                         // Enregistrez l'utilisateur avec le mot de passe haché
                         $participant->setPassword($hashedPassword);
-
-
-
                         $participant->setAdministrateur($data[4]);
                         $participant->setActif($data[5]);
-
                         $site = $siteRepo->find((int)$data[6]);
                         $participant->setSite($site);
-
-
                         $participant->setEmail($data[7]);
-
                         $tableau = [];
                         $tableau[] = $data[8];
                         $participant->setRoles($tableau);
 
-
-
                         $entityManager->persist($participant);
                         $entityManager->flush();
-
                     }
-
                 }
 
                 fclose($file);

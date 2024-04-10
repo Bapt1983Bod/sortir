@@ -21,8 +21,7 @@
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
     <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+           value="{{ csrf_token('authenticate') }}">
 
     <div class="checkbox mb-3">
         <label>
@@ -35,7 +34,4 @@
         Sign in
     </button>
 </form>
-
-
-
 {% endblock %}
