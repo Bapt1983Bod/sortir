@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h2>Liste des groupes</h2>
+                <h2>Mes groupes privés</h2>
                 <table class="table">
                     <thead>
                     <tr>
@@ -16,26 +16,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for group in groups %}
-                        <tr>
-                            <td>{{ group.nom }}</td>
-                            <td>{{ group.description }}</td>
-                            <td>
-                                <ul>
-                                    {% for participant in group.membres %}
-                                        <li>{{ participant.nom }} {{ participant.prenom }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                            <td>
-                                <form method="POST" action="{{ path('app_group_delete', {'id': group.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?');">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
-                                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
+
+            {% for group in groups %}
+                {% if group.membres.contains(user) %}
+                    <tr>
+                        <td>{{ group.nom }}</td>
+                        <td>{{ group.description }}</td>
+                        <td>
+                            <ul>
+                                {% for participant in group.membres %}
+                                    <li>{{ participant.nom }} {{ participant.prenom }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ path('app_group_delete', {'id': group.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ group.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
                     </tbody>
                 </table>
             </div>
