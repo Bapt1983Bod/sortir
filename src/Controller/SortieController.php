@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\CreationSortieType;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -89,9 +90,10 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie/cancel/{id}', name: 'app_sortie_stop')]
-    public function stop(Sortie $sortie, EntityManagerInterface $em): Response
+    public function stop(Sortie $sortie, EntityManagerInterface $em, EtatRepository $etatRepository): Response
     {
-        $sortie->setEtat($em->getRepository(Etat::class)->find(6));
+        //$sortie->setEtat($em->getRepository(Etat::class)->find(6));
+        $sortie->setEtat($etatRepository->find(6));
         $em->persist($sortie);
         $em->flush();
         return $this->redirectToRoute('app_main');

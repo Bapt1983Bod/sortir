@@ -6,6 +6,7 @@ use App\Form\ProfileType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Services\PhotoUploader;
+use App\Services\Status;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -19,9 +20,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'app_profil')]
-    public function myProfil(SortieRepository$sortieRepository): Response
+    public function myProfil(SortieRepository$sortieRepository, Status $status): Response
     {
         $sorties = $sortieRepository->findByOrganisateur($this->getUser());
+
+        $status->status($sorties);
+
         return $this->render('profil/monProfil.html.twig', [
             'sorties'=>$sorties
         ]);

@@ -35,22 +35,22 @@ class Status
             $dateHeureFinSortie->modify('+' . $sortie->getDuree() . ' minutes');
             $dateHeureFinSortie = $dateHeureFinSortie->getTimestamp();
 
-            if (($today >= $dateFinInscription) or ($sortie->getNbInscriptionsmax() <= count($sortie->getParticipants()))){
-                if ($today > $dateHeureDebut){
-                    if ($today > $dateHeureFinSortie){
-                        if($dateHeureFinSortie<$old) {
-                            $sortie->setEtat($etats[6]); // Passage en état archivé
+            if ($dateHeureFinSortie < $old) {
+                $sortie->setEtat($etats[6]); // Passage en état archivé
+            } elseif ($sortie->getEtat() != $etats[5]) {
+                if (($today >= $dateFinInscription) or ($sortie->getNbInscriptionsmax() <= count($sortie->getParticipants()))) {
+                    if ($today > $dateHeureDebut) {
+                        if ($today > $dateHeureFinSortie) {
+                                $sortie->setEtat($etats[4]); // Passage en état passée
                         } else {
-                            $sortie->setEtat($etats[4]); // Passage en état passée
+                            $sortie->setEtat($etats[3]); // Passage en état en cours
                         }
                     } else {
-                        $sortie->setEtat($etats[3]); // Passage en état en cours
+                        $sortie->setEtat($etats[2]); // Passage en état cloturé
                     }
                 } else {
-                    $sortie->setEtat($etats[2]); // Passage en état cloturé
+                    $sortie->setEtat($etats[1]); // Passage en état ouverte
                 }
-            } else {
-                $sortie->setEtat($etats[1]); // Passage en état ouverte
             }
             $this->entityManager->persist($sortie);
         }
