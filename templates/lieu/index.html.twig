@@ -5,5 +5,10 @@
 {% block body %}
     <h3>Attention, soyer bien sûr de rentrer l'adresse exacte !</h3>
     <br>
+    {{ form_start(form) }}
+    {{ form_row( form.nom) }}
+    {{ form_row( form.rue) }}
+    {{ form_row( form.ville) }}<br>
+    <button type="submit" class="btn btn-secondary">Soumettre</button>
     {{ form(form) }}
 {% endblock %}
