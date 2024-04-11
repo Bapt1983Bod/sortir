@@ -27,11 +27,12 @@
                     {{ form_row(form.site, {'attr': {'class': 'form-control'}}) }}
                 </div>
                 <div class="form-group">
-                    {{ form_row(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.lieu, {'attr': {'class': 'form-control'}}) }}<button class="btn btn-primary"><a href="{{ path('app_lieu_create') }}" style="color: white;">Créer lieu</a></button>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary"><a href="{{ path('app_lieu_create') }}" style="color: white;">Créer lieu</a></button>
+
                 </div>
+                <br><br>
                 <div class="form-group">
                     {{ form_row(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
                 </div>
