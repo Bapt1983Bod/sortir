@@ -37,7 +37,7 @@ class Status
 
             if ($dateHeureFinSortie < $old) {
                 $sortie->setEtat($etats[6]); // Passage en état archivé
-            } elseif ($sortie->getEtat() != $etats[5]) {
+            } elseif ($sortie->getEtat() != $etats[5] or $sortie->getEtat() != $etats[0]) {
                 if (($today >= $dateFinInscription) or ($sortie->getNbInscriptionsmax() <= count($sortie->getParticipants()))) {
                     if ($today > $dateHeureDebut) {
                         if ($today > $dateHeureFinSortie) {

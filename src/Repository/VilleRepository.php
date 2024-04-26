@@ -29,4 +29,15 @@ class VilleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByNameCp($nom, $cp) : array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.nom = :nom')
+            -> setParameter( 'nom', $nom )
+            -> andWhere( 'v.codePostal = :cp')
+            ->setParameter('cp', $cp)
+            ->getQuery()
+            ->getResult();
+    }
 }

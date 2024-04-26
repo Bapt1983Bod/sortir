@@ -24,7 +24,7 @@ class ProfilController extends AbstractController
     {
         $sorties = $sortieRepository->findByOrganisateur($this->getUser());
 
-        $status->status($sorties);
+        //$status->status($sorties);
 
         return $this->render('profil/monProfil.html.twig', [
             'sorties'=>$sorties

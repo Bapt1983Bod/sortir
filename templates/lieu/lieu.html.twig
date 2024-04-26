@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout d'un lieu{% endblock %}
+
+{% block body %}
+
+    <form class="form-control" action="{{ path('app_lieu_create') }}" method="get">
+        <label for="rue">Rue</label>
+        <input class="form-control" type="text" name="rue" id="rue">
+        <label for="codePostal">Code Postal</label>
+        <input class="form-control" type="text" name="codepostal" id="codepostal"> <br>
+        <button class="btn btn-secondary" type="submit">Rechercher</button>
+    </form><br>
+
+    <form class="form-control" action="{{ path('app_lieu_create')}}" method="get">
+
+    {% if adresses is not empty %}
+        <select class="form-control" name="idAdresse" id="idAdresse">
+            <option value="">--Choisir une adresse--</option>
+            {% for adresse in adresses %}
+            <option value="{{ adresse.id}}">{{ adresse.name }} {{ adresse.postcode}} {{ adresse.city }}</option>
+            {% endfor %}
+        </select>
+        <label>Nom du lieu</label>
+        <input class="form-control" type="text" name="nomLieu" required="required">
+        <br>
+        <button class="btn btn-secondary" type="submit">Enregistrer</button>
+    {% endif %}
+    </form>
+
+
+
+
+{% endblock %}
